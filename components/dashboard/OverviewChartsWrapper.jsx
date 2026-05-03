@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
-import { getOverviewStats, getChartData } from "@/lib/mockDashboardApi";
+import { getUsers, getOrders } from "@/lib/adminApi";
 import OverviewCharts from "./OverviewCharts";
 
 export default function AdminOverview() {
-const { role } = useAuth();
+  const { role, user } = useAuth();
   const { isDark } = useTheme();
 
   const [stats, setStats] = useState(null);
@@ -17,24 +17,135 @@ const { role } = useAuth();
   useEffect(() => {
     let cancel = false;
 
-    setLoading(true);
+    const fetchData = async () => {
+      setLoading(true);
 
-    Promise.all([
-      getOverviewStats(role),
-      getChartData(role),
-    ])
-      .then(([s, c]) => {
-        if (!cancel) {
-          setStats(s);
-          setCharts(c);
-        }
-      })
-      .finally(() => {
+      try {
+        const [users, orders] = await Promise.all([
+          getUsers(user?.email),
+          getOrders(user?.email),
+        ]);
+
+        if (cancel) return;
+
+        // ---------------- STATS ----------------
+        const revenue = orders.reduce((sum, o) => sum + o.total, 0);
+
+        setStats({
+          cards: [
+            {
+              id: 1,
+              label: "Users",
+              value: users.length,
+              hint: "Total users",
+            },
+            {
+              id: 2,
+              label: "Orders",
+              value: orders.length,
+              hint: "Total orders",
+            },
+            {
+              id: 3,
+              label: "Revenue",
+              value: `$${revenue}`,
+              hint: "Total earnings",
+            },
+            {
+              id: 4,
+              label: "Banners",
+              value: 0,
+              hint: "CMS banners",
+            },
+          ],
+        });
+
+        // ---------------- PIE CHART ----------------
+        const pieDataRaw = [
+          {
+            name: "Pending",
+            value: orders.filter((o) => o.status === "pending").length,
+          },
+          {
+            name: "Processing",
+            value: orders.filter((o) => o.status === "processing").length,
+          },
+          {
+            name: "Completed",
+            value: orders.filter((o) => o.status === "completed").length,
+          },
+          {
+            name: "Cancelled",
+            value: orders.filter((o) => o.status === "cancelled").length,
+          },
+        ];
+
+        // remove empty values
+        const pieData = pieDataRaw.filter((p) => p.value > 0);
+
+        // fallback so chart never breaks
+        const finalPieData =
+          pieData.length > 0 ? pieData : [{ name: "No Orders", value: 1 }];
+
+        const monthlyMap = {};
+
+        orders.forEach((o) => {
+          const date = new Date(o.createdAt || o.placedAt);
+          const month = date.toLocaleString("default", { month: "short" });
+
+          if (!monthlyMap[month]) {
+            monthlyMap[month] = {
+              month,
+              users: 0,
+              revenue: 0,
+            };
+          }
+
+          monthlyMap[month].revenue += o.total;
+        });
+
+        users.forEach((u) => {
+          const date = new Date(u.createdAt);
+          const month = date.toLocaleString("default", { month: "short" });
+
+          if (!monthlyMap[month]) {
+            monthlyMap[month] = {
+              month,
+              users: 0,
+              revenue: 0,
+            };
+          }
+
+          monthlyMap[month].users += 1;
+        });
+
+        const lineData = Object.values(monthlyMap);
+
+        // ---------------- CHARTS ----------------
+        setCharts({
+          barData: [
+            {
+              name: "Orders",
+              sales: orders.length,
+              listings: users.length,
+            },
+          ],
+          lineData,
+          pieData: finalPieData,
+        });
+      } catch (err) {
+        console.error(err);
+      } finally {
         if (!cancel) setLoading(false);
-      });
+      }
+    };
 
-    return () => (cancel = true);
-  }, [role]);
+    fetchData();
+
+    return () => {
+      cancel = true;
+    };
+  }, [user?.email]);
 
   if (loading) {
     return (
