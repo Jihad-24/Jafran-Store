@@ -32,9 +32,7 @@ function NavLink({ href, label, icon, active, onNavigate }) {
           : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
       }`}
     >
-      <span className="text-xs w-5 text-center opacity-80" aria-hidden>
-        {icon}
-      </span>
+      <span className="text-xs w-5 text-center opacity-80">{icon}</span>
       {label}
     </Link>
   );
@@ -42,15 +40,25 @@ function NavLink({ href, label, icon, active, onNavigate }) {
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
-  const { user, logout, dashboardRole } = useAuth();
+  const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isAdmin = dashboardRole === "admin";
-  const items = isAdmin ? adminNav : userNav;
+
+  const isAdmin = user?.role === "admin";
+  const items = user ? (isAdmin ? adminNav : userNav) : [];
 
   const closeMobile = () => setMobileOpen(false);
 
+  if (!user) {
+    return (
+      <div className="w-64 p-4 text-sm text-gray-500 dark:text-gray-400 border-r border-gray-200 dark:border-gray-800">
+        Please login to access dashboard
+      </div>
+    );
+  }
+
   const sidebarInner = (
     <>
+      {/* HEADER */}
       <div className="px-2 mb-8">
         <Link
           href="/"
@@ -59,7 +67,11 @@ export default function DashboardSidebar() {
         >
           Odyssey
         </Link>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Dashboard</p>
+
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Dashboard
+        </p>
+
         <div className="mt-3 inline-flex items-center gap-2">
           <span
             className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
@@ -73,7 +85,8 @@ export default function DashboardSidebar() {
         </div>
       </div>
 
-      <nav className="flex flex-col gap-1 flex-1" aria-label="Dashboard">
+      {/* NAV */}
+      <nav className="flex flex-col gap-1 flex-1">
         {items.map((item) => (
           <NavLink
             key={item.href}
@@ -83,17 +96,20 @@ export default function DashboardSidebar() {
             active={
               item.href === "/dashboard"
                 ? pathname === "/dashboard"
-                : pathname === item.href || pathname.startsWith(`${item.href}/`)
+                : pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`)
             }
             onNavigate={closeMobile}
           />
         ))}
       </nav>
 
+      {/* FOOTER */}
       <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 space-y-2">
         <p className="text-xs text-gray-500 dark:text-gray-400 truncate px-1">
-          {user?.email ?? "Not signed in"}
+          {user?.email}
         </p>
+
         <Link
           href="/items"
           onClick={closeMobile}
@@ -101,54 +117,48 @@ export default function DashboardSidebar() {
         >
           ← Storefront
         </Link>
-        {user ? (
-          <button
-            type="button"
-            onClick={() => {
-              closeMobile();
-              logout();
-            }}
-            className="w-full text-left text-sm text-red-600 dark:text-red-400 hover:underline px-1 py-1"
-          >
-            Sign out
-          </button>
-        ) : (
-          <Link
-            href="/login"
-            onClick={closeMobile}
-            className="block text-sm text-indigo-600 dark:text-indigo-400 hover:underline px-1 py-1"
-          >
-            Log in (demo accounts)
-          </Link>
-        )}
+
+        <button
+          onClick={() => {
+            closeMobile();
+            logout();
+          }}
+          className="w-full text-left text-sm text-red-600 dark:text-red-400 hover:underline px-1 py-1"
+        >
+          Sign out
+        </button>
       </div>
     </>
   );
 
   return (
     <div className="w-full md:w-64 shrink-0 flex flex-col md:flex-row">
-      <div className="md:hidden sticky top-0 z-40 flex items-center justify-between gap-3 px-4 py-3 bg-white/90 dark:bg-gray-950/90 backdrop-blur border-b border-gray-200 dark:border-gray-800">
-        <span className="font-semibold text-gray-900 dark:text-gray-100">Menu</span>
+      {/* MOBILE TOP BAR */}
+      <div className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-gray-950/90 backdrop-blur border-b border-gray-200 dark:border-gray-800">
+        <span className="font-semibold text-gray-900 dark:text-gray-100">
+          Menu
+        </span>
+
         <button
           type="button"
           className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-sm"
           onClick={() => setMobileOpen((o) => !o)}
-          aria-expanded={mobileOpen}
         >
           {mobileOpen ? "Close" : "Open"}
         </button>
       </div>
 
+      {/* OVERLAY */}
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 z-30 bg-black/40"
-          aria-hidden
           onClick={closeMobile}
         />
       )}
 
+      {/* SIDEBAR */}
       <aside
-        className={`fixed md:sticky top-0 z-40 h-screen w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 flex flex-col p-4 transition-transform duration-200 md:translate-x-0 ${
+        className={`fixed md:sticky top-0 z-40 h-screen w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 flex flex-col p-4 transition-transform duration-200 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >

@@ -4,21 +4,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import axios from "axios";
-import { matchMockAccount } from "@/lib/mockAuth";
 
-const ROLE_KEY = "odyssey_dashboard_role";
-const MOCK_SESSION_KEY = "odyssey_mock_session";
 const GUEST_CART_KEY = "guest_cart";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [firebaseUser, setFirebaseUser] = useState(null);
-  const [mockSession, setMockSession] = useState(null);
-  const [dashboardRole, setDashboardRoleState] = useState("user");
+  const [dbUser, setDbUser] = useState(null);
 
-  // ---------------- USER ----------------
-  const user = mockSession?.user ?? firebaseUser;
+  // final user = DB user (includes role) OR firebase fallback
+  const user = dbUser || firebaseUser;
 
   // ---------------- MERGE GUEST CART ----------------
   const mergeGuestCart = async (email) => {
@@ -39,87 +35,45 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ---------------- FIREBASE AUTH ----------------
+  // ---------------- FETCH USER FROM DB ----------------
+  const fetchUserFromDB = async (email) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5001/users?email=${email}`
+      );
+
+      return res.data?.[0] || null;
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      return null;
+    }
+  };
+
+  // ---------------- FIREBASE AUTH LISTENER ----------------
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       setFirebaseUser(u);
 
       if (u?.email) {
         await mergeGuestCart(u.email);
+
+        const dbUserData = await fetchUserFromDB(u.email);
+        setDbUser(dbUserData);
+
         window.dispatchEvent(new Event("cart-updated"));
+      } else {
+        setDbUser(null);
       }
     });
 
     return () => unsub();
   }, []);
 
-  // ---------------- INIT MOCK SESSION ----------------
-  useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(MOCK_SESSION_KEY);
-
-      if (raw) {
-        const s = JSON.parse(raw);
-
-        if (s?.user?.email) {
-          setMockSession(s);
-
-          if (s.role === "admin" || s.role === "user") {
-            setDashboardRoleState(s.role);
-            localStorage.setItem(ROLE_KEY, s.role);
-          }
-        }
-      }
-
-      const stored = localStorage.getItem(ROLE_KEY);
-      if (stored === "admin" || stored === "user") {
-        setDashboardRoleState(stored);
-      }
-    } catch {}
-  }, []);
-
-  // ---------------- ROLE ----------------
-  const setDashboardRole = (role) => {
-    const next = role === "admin" ? "admin" : "user";
-
-    localStorage.setItem(ROLE_KEY, next);
-    setDashboardRoleState(next);
-
-    if (mockSession) {
-      const nextSession = { ...mockSession, role: next };
-      sessionStorage.setItem(
-        MOCK_SESSION_KEY,
-        JSON.stringify(nextSession)
-      );
-      setMockSession(nextSession);
-    }
-  };
-
-  // ---------------- MOCK LOGIN ----------------
-  const loginMock = async (email, password) => {
-    const m = matchMockAccount(email, password);
-    if (!m) return false;
-
-    const session = { user: m.user, role: m.role };
-
-    sessionStorage.setItem(MOCK_SESSION_KEY, JSON.stringify(session));
-    localStorage.setItem(ROLE_KEY, m.role);
-
-    setMockSession(session);
-    setDashboardRoleState(m.role);
-
-    await mergeGuestCart(m.user.email);
-
-    window.dispatchEvent(new Event("cart-updated"));
-
-    return true;
-  };
-
   // ---------------- LOGOUT ----------------
   const logout = async () => {
-    sessionStorage.removeItem(MOCK_SESSION_KEY);
-    setMockSession(null);
     await signOut(auth);
+    setFirebaseUser(null);
+    setDbUser(null);
   };
 
   return (
@@ -127,10 +81,11 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         logout,
-        dashboardRole,
-        setDashboardRole,
-        loginMock,
-        isMockSession: Boolean(mockSession),
+
+        // role helpers (clean & simple)
+        isAdmin: dbUser?.role === "admin",
+        isUser: dbUser?.role === "user",
+        role: dbUser?.role || "user",
       }}
     >
       {children}

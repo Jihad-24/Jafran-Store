@@ -14,21 +14,29 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+  const email = e.target.email.value;
+  const password = e.target.password.value;
 
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/");
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+    // store user in DB with role
+    await axios.post("http://localhost:5001/users", {
+      email: cred.user.email,
+      role: "user",
+      createdAt: new Date(),
+    });
+
+    router.push("/");
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleGoogleRegister = async () => {
     const provider = new GoogleAuthProvider();
