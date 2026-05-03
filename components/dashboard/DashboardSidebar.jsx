@@ -40,12 +40,17 @@ function NavLink({ href, label, icon, active, onNavigate }) {
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+const { user, logout, role, isAdmin } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isAdmin = user?.role === "admin";
-  const items = user ? (isAdmin ? adminNav : userNav) : [];
+  // const isAdmin = user?.role === "admin";
+  // const items = user ? (isAdmin ? adminNav : userNav) : [];
+  // const role = user?.role || "user";
+  // const items = role === "admin" ? adminNav : userNav;
+const items = role === "admin" ? adminNav : userNav;
 
+console.log("USER:", user);
+console.log("ROLE:", role);
   const closeMobile = () => setMobileOpen(false);
 
   if (!user) {
@@ -96,8 +101,7 @@ export default function DashboardSidebar() {
             active={
               item.href === "/dashboard"
                 ? pathname === "/dashboard"
-                : pathname === item.href ||
-                  pathname.startsWith(`${item.href}/`)
+                : pathname === item.href || pathname.startsWith(`${item.href}/`)
             }
             onNavigate={closeMobile}
           />

@@ -5,16 +5,16 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AdminDashboardSectionLayout({ children }) {
-  const { dashboardRole } = useAuth();
+const { role } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (dashboardRole !== "admin") {
+    if (role !== "admin") {
       router.replace("/dashboard");
     }
-  }, [dashboardRole, router]);
+  }, [role, router]);
 
-  if (dashboardRole !== "admin") {
+  if (role !== "admin") {
     return (
       <div className="max-w-6xl mx-auto py-16 text-center text-sm text-gray-500 dark:text-gray-400">
         Redirecting to overview…

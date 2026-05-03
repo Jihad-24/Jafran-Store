@@ -36,18 +36,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   // ---------------- FETCH USER FROM DB ----------------
-  const fetchUserFromDB = async (email) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5001/users?email=${email}`
-      );
+ const fetchUserFromDB = async (email) => {
+  try {
+    const res = await axios.get(
+      `http://localhost:5001/users?email=${email}`
+    );
 
-      return res.data?.[0] || null;
-    } catch (err) {
-      console.error("Failed to fetch user:", err);
-      return null;
-    }
-  };
+    return res.data || null; // ✅ FIXED
+  } catch (err) {
+    console.error("Failed to fetch user:", err);
+    return null;
+  }
+};
 
   // ---------------- FIREBASE AUTH LISTENER ----------------
   useEffect(() => {

@@ -14,7 +14,6 @@ import axios from "axios";
 
 export default function Login() {
   const router = useRouter();
-  const { loginMock } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
@@ -66,9 +65,9 @@ export default function Login() {
           Welcome Back
         </h1>
 
-        <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-4 leading-relaxed">
+        {/* <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-4 leading-relaxed">
           {MOCK_DEMO_HINT}
-        </p>
+        </p> */}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-3">
           <input name="email" placeholder="Email" className="input" />
