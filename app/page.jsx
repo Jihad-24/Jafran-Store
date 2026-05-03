@@ -5,6 +5,7 @@ import Link from "next/link";
 import { itemsData } from "@/data/items";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import HeroBanner from "../components/HeroBanner";
 
 export default function Home() {
   const { user, logout } = useAuth();
@@ -64,45 +65,7 @@ export default function Home() {
       <Navbar />
 
       {/* 1 Hero */}
-      <section
-        className="relative h-[80vh] flex items-center justify-center text-center text-white"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1523275335684-37898b6baf30')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60"></div>
-
-        <div className="relative container mx-auto px-4">
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            Discover & Manage Products Easily
-          </h1>
-
-          <p className="mt-5 text-gray-200 text-lg max-w-2xl mx-auto">
-            A simple, clean, and powerful platform to add, manage, and explore
-            products with ease.
-          </p>
-
-          <div className="mt-8 flex justify-center gap-4">
-            <Link
-              href="/items"
-              className="px-6 py-3 rounded-full bg-white text-black hover:bg-gray-200 transition"
-            >
-              Explore Items
-            </Link>
-
-            <Link
-              href="/items/add"
-              className="px-6 py-3 rounded-full border border-white text-white hover:bg-white hover:text-black transition"
-            >
-              Add Product
-            </Link>
-          </div>
-        </div>
-      </section>
+     <HeroBanner />
 
       {/* 2 Features */}
       <section className="bg-gray-50 dark:bg-gray-950 py-20">
