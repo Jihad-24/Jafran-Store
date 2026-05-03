@@ -18,7 +18,6 @@ export default function Navbar() {
     { href: "/items", label: "Products" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
-   
   ];
   const navLinksN = [
     { href: "/", label: "Home" },
@@ -42,23 +41,25 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6 text-sm text-gray-600 dark:text-gray-300">
-          {user ? navLinksN.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="hover:text-black dark:hover:text-white transition"
-            >
-              {link.label}
-            </Link>
-          )) : navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="hover:text-black dark:hover:text-white transition"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {user
+            ? navLinksN.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="hover:text-black dark:hover:text-white transition"
+                >
+                  {link.label}
+                </Link>
+              ))
+            : navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="hover:text-black dark:hover:text-white transition"
+                >
+                  {link.label}
+                </Link>
+              ))}
         </div>
 
         {/* Right Side */}
@@ -137,9 +138,17 @@ export default function Navbar() {
                 onClick={() => setOpen(!open)}
                 className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
               >
-                <div className="w-7 h-7 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center text-xs">
-                  {user.email?.charAt(0).toUpperCase()}
-                </div>
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="avatar"
+                    className="w-7 h-7 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-7 h-7 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center text-xs">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <span className="text-sm max-w-[120px] truncate text-gray-700 dark:text-gray-200">
                   {user.email}
                 </span>
