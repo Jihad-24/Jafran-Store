@@ -1,0 +1,201 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { useCart } from "@/context/CartContext";
+
+export default function CheckoutPage() {
+  const router = useRouter();
+  const { items, hydrated, cartTotal, clearCart } = useCart();
+  const [submitting, setSubmitting] = useState(false);
+
+  const delivery = 0;
+  const total = cartTotal + delivery;
+
+  useEffect(() => {
+    if (hydrated && items.length === 0) router.replace("/cart");
+  }, [hydrated, items.length, router]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    const form = new FormData(e.currentTarget);
+    const orderId = `OD-${Date.now().toString(36).toUpperCase()}`;
+
+    const payload = {
+      id: orderId,
+      total,
+      subtotal: cartTotal,
+      delivery,
+      placedAt: new Date().toISOString(),
+      customer: {
+        name: form.get("name"),
+        email: form.get("email"),
+        phone: form.get("phone"),
+        address: form.get("address"),
+        city: form.get("city"),
+        notes: form.get("notes") || "",
+      },
+      payment: form.get("payment"),
+      items: items.map((i) => ({
+        _id: i._id,
+        title: i.title,
+        qty: i.qty,
+        price: i.price,
+      })),
+    };
+
+    setTimeout(() => {
+      try {
+        sessionStorage.setItem("lastOrder", JSON.stringify(payload));
+      } catch {}
+      clearCart();
+      router.push(`/checkout/success?id=${encodeURIComponent(orderId)}`);
+    }, 800);
+  };
+
+  if (!hydrated || items.length === 0) {
+    return (
+      <div>
+        <Navbar />
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center text-sm text-gray-400">
+          {!hydrated ? "Loading…" : "Redirecting…"}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <Navbar />
+
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+            <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Home</Link>
+            <span>/</span>
+            <Link href="/cart" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Cart</Link>
+            <span>/</span>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">Checkout</span>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Checkout</h1>
+
+          <div className="grid lg:grid-cols-5 gap-8 items-start">
+            <form onSubmit={handleSubmit} className="lg:col-span-3 space-y-6">
+              <section className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+                <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+                  Delivery details
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Full name</label>
+                    <input name="name" required className="input" placeholder="Your name" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Email</label>
+                    <input name="email" type="email" required className="input" placeholder="you@example.com" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Phone</label>
+                    <input name="phone" type="tel" required className="input" placeholder="+880 …" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Address</label>
+                    <input name="address" required className="input" placeholder="Street, building, area" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">City</label>
+                    <input name="city" required className="input" placeholder="City" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Order notes (optional)</label>
+                    <textarea name="notes" rows={3} className="input resize-none" placeholder="Delivery instructions…" />
+                  </div>
+                </div>
+              </section>
+
+              <section className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+                <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+                  Payment
+                </h2>
+                <div className="space-y-3">
+                  {[
+                    { value: "cod", label: "Cash on delivery" },
+                    { value: "card", label: "Card (pay on delivery)" },
+                  ].map((opt) => (
+                    <label
+                      key={opt.value}
+                      className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer has-checked:border-gray-900 dark:has-checked:border-white"
+                    >
+                      <input type="radio" name="payment" value={opt.value} defaultChecked={opt.value === "cod"} className="accent-gray-900 dark:accent-white" />
+                      <span className="text-sm text-gray-800 dark:text-gray-200">{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/cart"
+                  className="px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                >
+                  ← Back to cart
+                </Link>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex-1 min-w-[200px] py-3.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-semibold text-sm hover:bg-gray-700 dark:hover:bg-gray-200 transition disabled:opacity-60 cursor-pointer"
+                >
+                  {submitting ? "Placing order…" : "Place order"}
+                </button>
+              </div>
+            </form>
+
+            <aside className="lg:col-span-2 lg:sticky lg:top-24">
+              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+                <h2 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-4">Your order</h2>
+                <ul className="space-y-3 text-sm max-h-64 overflow-y-auto scrollbar-hide">
+                  {items.map((item) => (
+                    <li key={item._id} className="flex justify-between gap-2 text-gray-600 dark:text-gray-400">
+                      <span className="truncate">
+                        {item.title} <span className="text-gray-400">×{item.qty}</span>
+                      </span>
+                      <span className="shrink-0 font-medium text-gray-800 dark:text-gray-200">
+                        ৳{(item.price * item.qty).toLocaleString()}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="border-t border-gray-200 dark:border-gray-800 my-4" />
+                <dl className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>৳{cartTotal.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Delivery</span>
+                    <span className="text-green-600 dark:text-green-400 font-medium">Free</span>
+                  </div>
+                </dl>
+                <div className="border-t border-gray-200 dark:border-gray-800 my-4" />
+                <div className="flex justify-between font-bold text-gray-900 dark:text-gray-100">
+                  <span>Total</span>
+                  <span>৳{total.toLocaleString()}</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
