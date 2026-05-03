@@ -53,8 +53,8 @@ export default function DashboardSidebar() {
   // const items = role === "admin" ? adminNav : userNav;
   const items = role === "admin" ? adminNav : userNav;
 
-  console.log("USER:", user);
-  console.log("ROLE:", role);
+  // console.log("USER:", user);
+  // console.log("ROLE:", role);
   const closeMobile = () => setMobileOpen(false);
 
   if (!user) {
