@@ -18,12 +18,13 @@ export default function Navbar() {
     { href: "/items", label: "Products" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/profile", label: "Profile" },
   ];
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-
         {/* Logo */}
         <Link
           href="/"
@@ -53,8 +54,18 @@ export default function Navbar() {
             className="relative p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
             title="Cart"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+              />
             </svg>
             {cartCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold rounded-full flex items-center justify-center px-1">
@@ -121,7 +132,6 @@ export default function Navbar() {
 
               {open && (
                 <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xl rounded-xl overflow-hidden">
-                  
                   <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
                     <p className="text-sm font-medium truncate text-gray-800 dark:text-gray-100">
                       {user.email}
@@ -144,21 +154,21 @@ export default function Navbar() {
                     Profile
                   </Link>
 
-                  <Link
+                  {/* <Link
                     href="/items/add"
                     className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                     onClick={() => setOpen(false)}
                   >
                     Add Product
-                  </Link>
+                  </Link> */}
 
-                  <Link
+                  {/* <Link
                     href="/items/manage"
                     className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                     onClick={() => setOpen(false)}
                   >
                     Manage Products
-                  </Link>
+                  </Link> */}
 
                   <button
                     onClick={() => {
@@ -187,7 +197,6 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-gray-200 dark:border-gray-800 px-4 py-3 space-y-2 bg-white dark:bg-gray-950">
-          
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -216,7 +225,9 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="pt-2 border-t border-gray-200 dark:border-gray-800 mt-2">
-              <p className="text-sm mb-2 truncate text-gray-700 dark:text-gray-200">{user.email}</p>
+              <p className="text-sm mb-2 truncate text-gray-700 dark:text-gray-200">
+                {user.email}
+              </p>
 
               <Link
                 href="/dashboard"
