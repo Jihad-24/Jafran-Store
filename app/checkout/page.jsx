@@ -6,11 +6,14 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, hydrated, cartTotal, clearCart } = useCart();
   const [submitting, setSubmitting] = useState(false);
+  const { user } = useAuth();
 
   const delivery = 0;
   const total = cartTotal + delivery;
@@ -19,9 +22,10 @@ export default function CheckoutPage() {
     if (hydrated && items.length === 0) router.replace("/cart");
   }, [hydrated, items.length, router]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+
     const form = new FormData(e.currentTarget);
     const orderId = `OD-${Date.now().toString(36).toUpperCase()}`;
 
@@ -31,30 +35,44 @@ export default function CheckoutPage() {
       subtotal: cartTotal,
       delivery,
       placedAt: new Date().toISOString(),
+
       customer: {
         name: form.get("name"),
-        email: form.get("email"),
+        email: user?.email || form.get("email"), // ✅ guest + logged-in support
         phone: form.get("phone"),
         address: form.get("address"),
         city: form.get("city"),
         notes: form.get("notes") || "",
+        isGuest: !user?.email, // ✅ important flag
       },
+
       payment: form.get("payment"),
+
       items: items.map((i) => ({
-        _id: i._id,
+        productId: i.productId,
         title: i.title,
         qty: i.qty,
         price: i.price,
       })),
     };
 
-    setTimeout(() => {
-      try {
-        sessionStorage.setItem("lastOrder", JSON.stringify(payload));
-      } catch {}
-      clearCart();
-      router.push(`/checkout/success?id=${encodeURIComponent(orderId)}`);
-    }, 800);
+    try {
+      // 🔥 send order to backend
+      await axios.post("http://localhost:5001/orders", payload);
+
+      // store for success page
+      sessionStorage.setItem("lastOrder", JSON.stringify(payload));
+
+      // clear cart (works for guest + user)
+      await clearCart();
+
+      router.push(`/checkout/success?id=${orderId}`);
+    } catch (err) {
+      console.error("Order failed:", err);
+      alert("Order failed. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!hydrated || items.length === 0) {
@@ -76,16 +94,30 @@ export default function CheckoutPage() {
       <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-            <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Home</Link>
+            <Link
+              href="/"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition"
+            >
+              Home
+            </Link>
             <span>/</span>
-            <Link href="/cart" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Cart</Link>
+            <Link
+              href="/cart"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition"
+            >
+              Cart
+            </Link>
             <span>/</span>
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Checkout</span>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">
+              Checkout
+            </span>
           </div>
         </div>
 
         <div className="max-w-6xl mx-auto px-6 py-10">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Checkout</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+            Checkout
+          </h1>
 
           <div className="grid lg:grid-cols-5 gap-8 items-start">
             <form onSubmit={handleSubmit} className="lg:col-span-3 space-y-6">
@@ -95,28 +127,72 @@ export default function CheckoutPage() {
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Full name</label>
-                    <input name="name" required className="input" placeholder="Your name" />
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+                      Full name
+                    </label>
+                    <input
+                      name="name"
+                      required
+                      className="input"
+                      placeholder="Your name"
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Email</label>
-                    <input name="email" type="email" required className="input" placeholder="you@example.com" />
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+                      Email
+                    </label>
+                    <input
+                      name="email"
+                      type="email"
+                      required
+                      className="input"
+                      placeholder="you@example.com"
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Phone</label>
-                    <input name="phone" type="tel" required className="input" placeholder="+880 …" />
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+                      Phone
+                    </label>
+                    <input
+                      name="phone"
+                      type="tel"
+                      required
+                      className="input"
+                      placeholder="+880 …"
+                    />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Address</label>
-                    <input name="address" required className="input" placeholder="Street, building, area" />
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+                      Address
+                    </label>
+                    <input
+                      name="address"
+                      required
+                      className="input"
+                      placeholder="Street, building, area"
+                    />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">City</label>
-                    <input name="city" required className="input" placeholder="City" />
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+                      City
+                    </label>
+                    <input
+                      name="city"
+                      required
+                      className="input"
+                      placeholder="City"
+                    />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Order notes (optional)</label>
-                    <textarea name="notes" rows={3} className="input resize-none" placeholder="Delivery instructions…" />
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+                      Order notes (optional)
+                    </label>
+                    <textarea
+                      name="notes"
+                      rows={3}
+                      className="input resize-none"
+                      placeholder="Delivery instructions…"
+                    />
                   </div>
                 </div>
               </section>
@@ -134,8 +210,16 @@ export default function CheckoutPage() {
                       key={opt.value}
                       className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer has-checked:border-gray-900 dark:has-checked:border-white"
                     >
-                      <input type="radio" name="payment" value={opt.value} defaultChecked={opt.value === "cod"} className="accent-gray-900 dark:accent-white" />
-                      <span className="text-sm text-gray-800 dark:text-gray-200">{opt.label}</span>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value={opt.value}
+                        defaultChecked={opt.value === "cod"}
+                        className="accent-gray-900 dark:accent-white"
+                      />
+                      <span className="text-sm text-gray-800 dark:text-gray-200">
+                        {opt.label}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -160,12 +244,18 @@ export default function CheckoutPage() {
 
             <aside className="lg:col-span-2 lg:sticky lg:top-24">
               <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
-                <h2 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-4">Your order</h2>
+                <h2 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-4">
+                  Your order
+                </h2>
                 <ul className="space-y-3 text-sm max-h-64 overflow-y-auto scrollbar-hide">
                   {items.map((item) => (
-                    <li key={item._id} className="flex justify-between gap-2 text-gray-600 dark:text-gray-400">
+                    <li
+                      key={item._id}
+                      className="flex justify-between gap-2 text-gray-600 dark:text-gray-400"
+                    >
                       <span className="truncate">
-                        {item.title} <span className="text-gray-400">×{item.qty}</span>
+                        {item.title}{" "}
+                        <span className="text-gray-400">×{item.qty}</span>
                       </span>
                       <span className="shrink-0 font-medium text-gray-800 dark:text-gray-200">
                         ৳{(item.price * item.qty).toLocaleString()}
@@ -181,7 +271,9 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>Delivery</span>
-                    <span className="text-green-600 dark:text-green-400 font-medium">Free</span>
+                    <span className="text-green-600 dark:text-green-400 font-medium">
+                      Free
+                    </span>
                   </div>
                 </dl>
                 <div className="border-t border-gray-200 dark:border-gray-800 my-4" />
