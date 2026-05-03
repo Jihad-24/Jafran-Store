@@ -20,10 +20,12 @@ export default function DataTable({
   onView,
   onEdit,
   onDelete,
+  renderModal,
 }) {
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState({ key: null, dir: "asc" });
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const keys = filterKeys?.length
     ? filterKeys
@@ -33,7 +35,11 @@ export default function DataTable({
     const q = filter.trim().toLowerCase();
     if (!q) return rows;
     return rows.filter((row) =>
-      keys.some((k) => String(row[k] ?? "").toLowerCase().includes(q)),
+      keys.some((k) =>
+        String(row[k] ?? "")
+          .toLowerCase()
+          .includes(q),
+      ),
     );
   }, [rows, filter, keys]);
 
@@ -135,7 +141,10 @@ export default function DataTable({
                   className="border-b border-gray-100 dark:border-gray-800/80 hover:bg-gray-50/80 dark:hover:bg-gray-800/40"
                 >
                   {columns.map((col) => (
-                    <td key={col.key} className="px-4 py-3 text-gray-700 dark:text-gray-200">
+                    <td
+                      key={col.key}
+                      className="px-4 py-3 text-gray-700 dark:text-gray-200"
+                    >
                       {col.render ? col.render(row) : row[col.key]}
                     </td>
                   ))}
@@ -145,7 +154,10 @@ export default function DataTable({
                         {onView && (
                           <button
                             type="button"
-                            onClick={() => onView(row)}
+                            onClick={() => {
+                              setSelectedRow(row);
+                              onView?.(row);
+                            }}
                             className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700"
                           >
                             View
@@ -202,6 +214,12 @@ export default function DataTable({
           </button>
         </div>
       </div>
+
+      {selectedRow && renderModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          {renderModal(selectedRow, () => setSelectedRow(null))}
+        </div>
+      )}
     </div>
   );
 }
