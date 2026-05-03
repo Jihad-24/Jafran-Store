@@ -39,10 +39,12 @@ export default async function Details({ params }) {
   const { id } = await params;
 
   const [itemRes, allRes] = await Promise.all([
-    fetch(`http://localhost:5001/items/${id}`, {
+    fetch(`https://jafran-store-server.vercel.app/items/${id}`, {
       cache: "no-store",
     }),
-    fetch(`http://localhost:5001/products`, { cache: "no-store" }),
+    fetch(`https://jafran-store-server.vercel.app/products`, {
+      cache: "no-store",
+    }),
   ]);
 
   if (!itemRes.ok) {

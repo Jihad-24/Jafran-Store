@@ -19,7 +19,7 @@ export default function AdminItemsPage() {
 
   const getAdminOrders = async () => {
     const res = await axios.get(
-      `http://localhost:5001/orders?email=${user?.email}`,
+      `https://jafran-store-server.vercel.app/orders?email=${user?.email}`,
     );
 
     return res.data.data.map((o) => ({
@@ -59,7 +59,7 @@ export default function AdminItemsPage() {
   const handleUpdateOrder = async () => {
     try {
       await axios.patch(
-        `http://localhost:5001/orders/${editOrder.id}?email=${user?.email}`,
+        `https://jafran-store-server.vercel.app/orders/${editOrder.id}?email=${user?.email}`,
         {
           status: form.status,
           payment: form.payment,
@@ -80,7 +80,7 @@ export default function AdminItemsPage() {
   const handleDeleteOrder = async () => {
     try {
       await axios.delete(
-        `http://localhost:5001/orders/${deleteOrder.id}?email=${user?.email}`,
+        `https://jafran-store-server.vercel.app/orders/${deleteOrder.id}?email=${user?.email}`,
       );
 
       // remove from UI instantly

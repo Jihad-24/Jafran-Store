@@ -43,7 +43,7 @@ export default function Login() {
       const user = result.user;
 
       // save / upsert user in DB
-      await axios.post("http://localhost:5001/users", {
+      await axios.post("https://jafran-store-server.vercel.app/users", {
         email: user.email,
         role: "user",
         createdAt: new Date(),

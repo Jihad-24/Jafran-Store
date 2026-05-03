@@ -14,7 +14,7 @@ export default function AdminUsersPage() {
   // fetch users
   const getAdminUsers = async () => {
     const res = await axios.get(
-      `http://localhost:5001/admin/users?email=${user?.email}`,
+      `https://jafran-store-server.vercel.app/admin/users?email=${user?.email}`,
     );
 
     return res.data.map((u) => ({
@@ -43,7 +43,7 @@ export default function AdminUsersPage() {
 
   const handleUpdate = async () => {
     await axios.patch(
-      `http://localhost:5001/admin/users/${editUser.email}?email=${user.email}`,
+      `https://jafran-store-server.vercel.app/admin/users/${editUser.email}?email=${user.email}`,
       form,
     );
 
@@ -56,7 +56,7 @@ export default function AdminUsersPage() {
 
   const handleDelete = async () => {
     await axios.delete(
-      `http://localhost:5001/admin/users/${deleteUser.email}?email=${user.email}`,
+      `https://jafran-store-server.vercel.app/admin/users/${deleteUser.email}?email=${user.email}`,
     );
 
     setRows((prev) => prev.filter((u) => u.email !== deleteUser.email));

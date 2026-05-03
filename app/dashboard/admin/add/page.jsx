@@ -30,9 +30,7 @@ export default function AddItem() {
 
     setImageFiles((prev) => [...prev, ...newFiles]);
 
-    const newPreviews = newFiles.map((file) =>
-      URL.createObjectURL(file)
-    );
+    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
 
     setPreviews((prev) => [...prev, ...newPreviews]);
   };
@@ -65,14 +63,12 @@ export default function AddItem() {
 
         return axios.post(
           `https://api.imgbb.com/1/upload?key=140f2d0db1502e65c2c0ee7bfc66be98`,
-          formData
+          formData,
         );
       });
 
       const responses = await Promise.all(uploadPromises);
-      const imageUrls = responses.map(
-        (res) => res.data.data.url
-      );
+      const imageUrls = responses.map((res) => res.data.data.url);
 
       const price = Number(e.target.price.value);
       const oldPrice = Number(e.target.oldPrice.value);
@@ -91,8 +87,8 @@ export default function AddItem() {
       };
 
       await axios.post(
-        "http://localhost:5001/products",
-        newItem
+        "https://jafran-store-server.vercel.app/products",
+        newItem,
       );
 
       alert("Item added successfully");
@@ -123,10 +119,7 @@ export default function AddItem() {
           <div className="absolute -inset-1 rounded-3xl blur-xl opacity-30"></div>
 
           <div className="relative bg-white/80 dark:bg-white/10 backdrop-blur-xl border border-gray-200 dark:border-white/20 rounded-3xl p-8 text-gray-900 dark:text-white">
-
-            <h1 className="text-3xl font-bold">
-              Create New Item
-            </h1>
+            <h1 className="text-3xl font-bold">Create New Item</h1>
 
             <p className="text-gray-500 dark:text-white/70 mt-1 mb-6">
               Add product details to your store
@@ -136,15 +129,12 @@ export default function AddItem() {
               <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="bg-white dark:bg-gray-900 text-black dark:text-white px-6 py-5 rounded-xl shadow-xl text-center">
                   <div className="animate-spin h-8 w-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-3"></div>
-                  <p className="font-medium">
-                    Adding product... please wait
-                  </p>
+                  <p className="font-medium">Adding product... please wait</p>
                 </div>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-
               <input
                 name="title"
                 placeholder="Product title"
@@ -222,17 +212,12 @@ export default function AddItem() {
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={(e) =>
-                    handleImageChange(e.target.files)
-                  }
+                  onChange={(e) => handleImageChange(e.target.files)}
                   className="hidden"
                   id="imageUpload"
                 />
 
-                <label
-                  htmlFor="imageUpload"
-                  className="cursor-pointer block"
-                >
+                <label htmlFor="imageUpload" className="cursor-pointer block">
                   {previews.length > 0 ? (
                     <div className="grid grid-cols-3 gap-3">
                       {previews.map((src, i) => (
@@ -260,10 +245,10 @@ export default function AddItem() {
                       type="button"
                       onClick={() => {
                         setImageFiles((prev) =>
-                          prev.filter((_, i) => i !== index)
+                          prev.filter((_, i) => i !== index),
                         );
                         setPreviews((prev) =>
-                          prev.filter((_, i) => i !== index)
+                          prev.filter((_, i) => i !== index),
                         );
                       }}
                       className="text-xs text-red-500 hover:underline"

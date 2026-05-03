@@ -51,10 +51,13 @@ export default function AdminBannerPage() {
         imageUrl = await uploadImage();
       }
 
-      await axios.post(`http://localhost:5001/banners?email=${user?.email}`, {
-        ...form,
-        image: imageUrl,
-      });
+      await axios.post(
+        `https://jafran-store-server.vercel.app/banners?email=${user?.email}`,
+        {
+          ...form,
+          image: imageUrl,
+        },
+      );
 
       toast.success("Banner created successfully 🎉");
 

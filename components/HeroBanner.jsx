@@ -17,7 +17,9 @@ export default function HeroBanner() {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/banners");
+        const res = await axios.get(
+          "https://jafran-store-server.vercel.app/banners",
+        );
         setBanners(res.data);
       } catch (err) {
         console.error(err);

@@ -258,10 +258,13 @@ export default function ProfilePage() {
 
                     const imageUrl = imgbbRes.data.data.url;
 
-                    await axios.patch("http://localhost:5001/users/avatar", {
-                      email: user.email,
-                      photoURL: imageUrl,
-                    });
+                    await axios.patch(
+                      "https://jafran-store-server.vercel.app/users/avatar",
+                      {
+                        email: user.email,
+                        photoURL: imageUrl,
+                      },
+                    );
 
                     setUploading(false);
                     setOpen(false);

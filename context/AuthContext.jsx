@@ -19,12 +19,11 @@ export const AuthProvider = ({ children }) => {
   // ---------------- MERGE GUEST CART ----------------
   const mergeGuestCart = async (email) => {
     try {
-      const guestCart =
-        JSON.parse(localStorage.getItem(GUEST_CART_KEY)) || [];
+      const guestCart = JSON.parse(localStorage.getItem(GUEST_CART_KEY)) || [];
 
       if (!guestCart.length) return;
 
-      await axios.post("http://localhost:5001/cart/merge", {
+      await axios.post("https://jafran-store-server.vercel.app/cart/merge", {
         email,
         items: guestCart,
       });
@@ -36,18 +35,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   // ---------------- FETCH USER FROM DB ----------------
- const fetchUserFromDB = async (email) => {
-  try {
-    const res = await axios.get(
-      `http://localhost:5001/users?email=${email}`
-    );
+  const fetchUserFromDB = async (email) => {
+    try {
+      const res = await axios.get(
+        `https://jafran-store-server.vercel.app/users?email=${email}`,
+      );
 
-    return res.data || null; // ✅ FIXED
-  } catch (err) {
-    console.error("Failed to fetch user:", err);
-    return null;
-  }
-};
+      return res.data || null; // ✅ FIXED
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      return null;
+    }
+  };
 
   // ---------------- FIREBASE AUTH LISTENER ----------------
   useEffect(() => {

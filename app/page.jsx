@@ -106,7 +106,7 @@ export default function Home() {
 
   // 🔥 Fetch from backend
   useEffect(() => {
-    fetch("http://localhost:5001/products")
+    fetch("https://jafran-store-server.vercel.app/products")
       .then((res) => res.json())
       .then((data) => {
         setItems(data);

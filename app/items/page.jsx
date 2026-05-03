@@ -6,7 +6,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
-const PRODUCTS_URL = "http://localhost:5001/products";
+const PRODUCTS_URL = "https://jafran-store-server.vercel.app/products";
 const PAGE_SIZE = 9;
 
 const StarIcon = ({ half = false, empty = false }) => (

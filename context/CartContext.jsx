@@ -36,7 +36,7 @@ export function CartProvider({ children }) {
 
         // 🔐 user cart
         const res = await axios.get(
-          `http://localhost:5001/cart?email=${user.email}`
+          `https://jafran-store-server.vercel.app/cart?email=${user.email}`,
         );
 
         setItems(res.data);
@@ -65,17 +65,13 @@ export function CartProvider({ children }) {
     if (!user?.email) {
       const cart = getGuestCart();
 
-      const existing = cart.find(
-        (i) => i.productId === newItem.productId
-      );
+      const existing = cart.find((i) => i.productId === newItem.productId);
 
       let updated;
 
       if (existing) {
         updated = cart.map((i) =>
-          i.productId === newItem.productId
-            ? { ...i, qty: i.qty + qty }
-            : i
+          i.productId === newItem.productId ? { ...i, qty: i.qty + qty } : i,
         );
       } else {
         updated = [...cart, newItem];
@@ -88,13 +84,13 @@ export function CartProvider({ children }) {
 
     // 🔐 logged in
     try {
-      await axios.post("http://localhost:5001/cart", {
+      await axios.post("https://jafran-store-server.vercel.app/cart", {
         ...newItem,
         userEmail: user.email,
       });
 
       const res = await axios.get(
-        `http://localhost:5001/cart?email=${user.email}`
+        `https://jafran-store-server.vercel.app/cart?email=${user.email}`,
       );
 
       setItems(res.data);
@@ -107,16 +103,16 @@ export function CartProvider({ children }) {
   const updateQty = async (id, qty) => {
     if (qty < 1) return;
 
-    await axios.patch(`http://localhost:5001/cart/${id}`, { qty });
+    await axios.patch(`https://jafran-store-server.vercel.app/cart/${id}`, {
+      qty,
+    });
 
-    setItems((prev) =>
-      prev.map((i) => (i._id === id ? { ...i, qty } : i))
-    );
+    setItems((prev) => prev.map((i) => (i._id === id ? { ...i, qty } : i)));
   };
 
   // ---------------- REMOVE ----------------
   const removeItem = async (id) => {
-    await axios.delete(`http://localhost:5001/cart/${id}`);
+    await axios.delete(`https://jafran-store-server.vercel.app/cart/${id}`);
 
     setItems((prev) => prev.filter((i) => i._id !== id));
   };
@@ -130,7 +126,7 @@ export function CartProvider({ children }) {
     }
 
     await axios.delete(
-      `http://localhost:5001/cart?email=${user.email}`
+      `https://jafran-store-server.vercel.app/cart?email=${user.email}`,
     );
 
     setItems([]);
@@ -153,10 +149,7 @@ export function CartProvider({ children }) {
 
   // ---------------- DERIVED ----------------
   const cartCount = items.reduce((sum, i) => sum + i.qty, 0);
-  const cartTotal = items.reduce(
-    (sum, i) => sum + i.price * i.qty,
-    0
-  );
+  const cartTotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
   return (
     <CartContext.Provider

@@ -69,7 +69,10 @@ export default function AddItem() {
         image: imageUrl,
       };
 
-      await axios.post("http://localhost:5001/products", newItem);
+      await axios.post(
+        "https://jafran-store-server.vercel.app/products",
+        newItem,
+      );
 
       alert("Item added successfully");
       // 🔥 reset everything

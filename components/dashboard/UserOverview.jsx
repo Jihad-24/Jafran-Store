@@ -29,7 +29,7 @@ export default function UserOverview() {
         setLoading(true);
 
         const res = await axios.get(
-          `http://localhost:5001/orders/user?email=${user.email}`,
+          `https://jafran-store-server.vercel.app/orders/user?email=${user.email}`,
         );
 
         const orders = res.data || [];

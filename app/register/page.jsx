@@ -15,53 +15,53 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  const email = e.target.email.value;
-  const password = e.target.password.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-    // store user in DB with role
-    await axios.post("http://localhost:5001/users", {
-      email: cred.user.email,
-      role: "user",
-      createdAt: new Date(),
-    });
+      // store user in DB with role
+      await axios.post("https://jafran-store-server.vercel.app/users", {
+        email: cred.user.email,
+        role: "user",
+        createdAt: new Date(),
+      });
 
-    router.push("/");
-  } catch (err) {
-    alert(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+      router.push("/");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGoogleRegister = async () => {
-  const provider = new GoogleAuthProvider();
+    const provider = new GoogleAuthProvider();
 
-  try {
-    const result = await signInWithPopup(auth, provider);
+    try {
+      const result = await signInWithPopup(auth, provider);
 
-    const user = result.user;
+      const user = result.user;
 
-    // save / upsert user in DB
-    await axios.post("http://localhost:5001/users", {
-      email: user.email,
-      role: "user",
-      createdAt: new Date(),
-      photoURL: user.photoURL || "",
-      name: user.displayName || "",
-      provider: "google",
-    });
+      // save / upsert user in DB
+      await axios.post("https://jafran-store-server.vercel.app/users", {
+        email: user.email,
+        role: "user",
+        createdAt: new Date(),
+        photoURL: user.photoURL || "",
+        name: user.displayName || "",
+        provider: "google",
+      });
 
-    router.push("/");
-  } catch (err) {
-    alert(err.message);
-  }
-};
+      router.push("/");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-950 px-4">
@@ -71,11 +71,7 @@ export default function Register() {
         </h1>
 
         <form onSubmit={handleRegister} className="flex flex-col gap-3">
-          <input
-            name="email"
-            placeholder="Email"
-            className="input"
-          />
+          <input name="email" placeholder="Email" className="input" />
           <input
             name="password"
             type="password"

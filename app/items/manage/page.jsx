@@ -13,7 +13,9 @@ export default function Manage() {
   // FETCH FROM MONGODB API
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/products");
+      const res = await axios.get(
+        "https://jafran-store-server.vercel.app/products",
+      );
       setItems(res.data);
     } catch (error) {
       console.error("Failed to load items", error);
@@ -39,7 +41,9 @@ export default function Manage() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5001/products/${id}`);
+      await axios.delete(
+        `https://jafran-store-server.vercel.app/products/${id}`,
+      );
 
       setItems((prev) => prev.filter((item) => item._id !== id));
 

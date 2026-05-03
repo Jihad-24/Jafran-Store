@@ -58,7 +58,10 @@ export default function CheckoutPage() {
 
     try {
       // 🔥 send order to backend
-      await axios.post("http://localhost:5001/orders", payload);
+      await axios.post(
+        "https://jafran-store-server.vercel.app/orders",
+        payload,
+      );
 
       // store for success page
       sessionStorage.setItem("lastOrder", JSON.stringify(payload));
