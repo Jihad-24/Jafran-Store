@@ -404,14 +404,20 @@ export default function Items() {
                     className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm outline-none transition hover:border-indigo-200 hover:shadow-md focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-500/40 dark:focus-visible:ring-offset-gray-950"
                   >
                     <div className="relative aspect-4/3 overflow-hidden bg-gray-100 dark:bg-gray-800">
-                      <Image
-                        src={item.image}
-                        alt=""
-                        fill
-                        unoptimized
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                      />
+                      {item.images?.[0] || item.image ? (
+                        <Image
+                          src={item.images?.[0] || item.image}
+                          alt={item.title || "product"}
+                          fill
+                          unoptimized
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-800 text-xs text-gray-500">
+                          No Image
+                        </div>
+                      )}
                       {item.discount > 0 && (
                         <span className="absolute right-3 top-3 rounded-full bg-gray-900 px-2.5 py-1 text-xs font-semibold text-white dark:bg-white dark:text-gray-900">
                           {item.discount}% off

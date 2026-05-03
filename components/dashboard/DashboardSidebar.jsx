@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 const userNav = [
   { href: "/dashboard", label: "Overview", icon: "◆" },
@@ -16,6 +17,7 @@ const adminNav = [
   { href: "/dashboard", label: "Overview", icon: "◆" },
   { href: "/dashboard/admin/users", label: "Manage Users", icon: "▣" },
   { href: "/dashboard/admin/items", label: "Manage Items", icon: "▤" },
+  { href: "/dashboard/admin/add", label: "Add Item", icon: "✚" },
   { href: "/dashboard/admin/reports", label: "Reports", icon: "▥" },
   { href: "/dashboard/admin/categories", label: "Categories", icon: "▦" },
   { href: "/dashboard/settings", label: "Settings", icon: "◎" },
@@ -40,17 +42,19 @@ function NavLink({ href, label, icon, active, onNavigate }) {
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
-const { user, logout, role, isAdmin } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
+
+  const { user, logout, role, isAdmin } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // const isAdmin = user?.role === "admin";
   // const items = user ? (isAdmin ? adminNav : userNav) : [];
   // const role = user?.role || "user";
   // const items = role === "admin" ? adminNav : userNav;
-const items = role === "admin" ? adminNav : userNav;
+  const items = role === "admin" ? adminNav : userNav;
 
-console.log("USER:", user);
-console.log("ROLE:", role);
+  console.log("USER:", user);
+  console.log("ROLE:", role);
   const closeMobile = () => setMobileOpen(false);
 
   if (!user) {
@@ -64,30 +68,56 @@ console.log("ROLE:", role);
   const sidebarInner = (
     <>
       {/* HEADER */}
-      <div className="px-2 mb-8">
-        <Link
-          href="/"
-          onClick={closeMobile}
-          className="text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100"
+      <div className="flex items-center justify-between">
+        <div className="px-2 mb-8">
+          <Link
+            href="/"
+            onClick={closeMobile}
+            className="text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100"
+          >
+            Odyssey
+          </Link>
+
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Dashboard
+          </p>
+
+          <div className="mt-3 inline-flex items-center gap-2">
+            <span
+              className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                isAdmin
+                  ? "bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-200"
+                  : "bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+              }`}
+            >
+              {isAdmin ? "Admin" : "User"}
+            </span>
+          </div>
+        </div>
+        <button
+          onClick={toggleTheme}
+          className={`relative inline-flex h-7 w-14 items-center rounded-full border transition ${
+            isDark
+              ? "bg-indigo-500 border-indigo-400"
+              : "bg-gray-200 border-gray-300"
+          }`}
+          aria-label="Toggle theme"
+          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
         >
-          Odyssey
-        </Link>
-
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Dashboard
-        </p>
-
-        <div className="mt-3 inline-flex items-center gap-2">
+          <span className="sr-only">Toggle theme</span>
           <span
-            className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
-              isAdmin
-                ? "bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-200"
-                : "bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+            className={`absolute left-1 text-[10px] font-semibold transition ${
+              isDark ? "text-white/80" : "text-gray-600"
             }`}
           >
-            {isAdmin ? "Admin" : "User"}
+            {isDark ? "ON" : "OFF"}
           </span>
-        </div>
+          <span
+            className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
+              isDark ? "translate-x-8" : "translate-x-1"
+            }`}
+          />
+        </button>
       </div>
 
       {/* NAV */}
