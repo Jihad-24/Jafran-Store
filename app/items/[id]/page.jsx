@@ -15,7 +15,11 @@ const StarIcon = ({ half = false, empty = false }) => (
     </svg>
     {half && (
       <span className="absolute inset-0 w-1/2 overflow-hidden">
-        <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+        <svg
+          className="w-4 h-4 text-amber-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.956a1 1 0 00.95.69h4.16c.969 0 1.371 1.24.588 1.81l-3.37 2.45a1 1 0 00-.364 1.118l1.287 3.956c.3.921-.755 1.688-1.538 1.118l-3.37-2.45a1 1 0 00-1.176 0l-3.37 2.45c-.783.57-1.838-.197-1.538-1.118l1.287-3.956a1 1 0 00-.364-1.118l-3.37-2.45c-.783-.57-.38-1.81.588-1.81h4.16a1 1 0 00.95-.69l1.286-3.956z" />
         </svg>
       </span>
@@ -35,8 +39,10 @@ export default async function Details({ params }) {
   const { id } = await params;
 
   const [itemRes, allRes] = await Promise.all([
-    fetch(`https://odyssey-app-server.vercel.app/items/${id}`, { cache: "no-store" }),
-    fetch(`https://odyssey-app-server.vercel.app/products`, { cache: "no-store" }),
+    fetch(`http://localhost:5001/items/${id}`, {
+      cache: "no-store",
+    }),
+    fetch(`http://localhost:5001/products`, { cache: "no-store" }),
   ]);
 
   if (!itemRes.ok) {
@@ -68,11 +74,17 @@ export default async function Details({ params }) {
         {/* Breadcrumb */}
         <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-            <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
+            <Link
+              href="/"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition"
+            >
               Home
             </Link>
             <span>/</span>
-            <Link href="/items" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
+            <Link
+              href="/items"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition"
+            >
               Items
             </Link>
             <span>/</span>
@@ -133,8 +145,18 @@ export default async function Details({ params }) {
               </div>
 
               <p className="text-sm text-gray-500 dark:text-gray-400 -mt-3 flex items-center gap-1.5">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Free delivery available
               </p>
@@ -159,7 +181,9 @@ export default async function Details({ params }) {
                     <dt className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
                       {label}
                     </dt>
-                    <dd className="text-gray-800 dark:text-gray-200 font-medium">{value}</dd>
+                    <dd className="text-gray-800 dark:text-gray-200 font-medium">
+                      {value}
+                    </dd>
                   </div>
                 ))}
               </dl>

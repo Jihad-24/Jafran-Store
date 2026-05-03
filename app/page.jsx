@@ -43,7 +43,7 @@ export default function Home() {
 
   // 🔥 Fetch from backend
   useEffect(() => {
-    fetch("https://odyssey-app-server.vercel.app/products")
+    fetch("http://localhost:5001/products")
       .then((res) => res.json())
       .then((data) => setItems(data))
       .catch((err) => console.error(err));
@@ -323,8 +323,11 @@ export default function Home() {
               <button
                 key={i}
                 onClick={() => setIndex(i)}
-                className={`w-2.5 h-2.5 rounded-full transition ${i === index ? "bg-gray-900 dark:bg-gray-100 scale-125" : "bg-gray-300 dark:bg-gray-700"
-                  }`}
+                className={`w-2.5 h-2.5 rounded-full transition ${
+                  i === index
+                    ? "bg-gray-900 dark:bg-gray-100 scale-125"
+                    : "bg-gray-300 dark:bg-gray-700"
+                }`}
               />
             ))}
           </div>

@@ -18,6 +18,13 @@ export default function Navbar() {
     { href: "/items", label: "Products" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
+   
+  ];
+  const navLinksN = [
+    { href: "/", label: "Home" },
+    { href: "/items", label: "Products" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
     { href: "/dashboard", label: "Dashboard" },
     { href: "/profile", label: "Profile" },
   ];
@@ -35,7 +42,15 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6 text-sm text-gray-600 dark:text-gray-300">
-          {navLinks.map((link) => (
+          {user ? navLinksN.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="hover:text-black dark:hover:text-white transition"
+            >
+              {link.label}
+            </Link>
+          )) : navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}

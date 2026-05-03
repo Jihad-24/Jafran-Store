@@ -69,10 +69,7 @@ export default function AddItem() {
         image: imageUrl,
       };
 
-      await axios.post(
-        "https://odyssey-app-server.vercel.app/products",
-        newItem,
-      );
+      await axios.post("http://localhost:5001/products", newItem);
 
       alert("Item added successfully");
       // 🔥 reset everything
