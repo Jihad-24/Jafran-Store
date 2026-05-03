@@ -6,33 +6,45 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
-
-const MOCK_PROFILE = {
-  displayName: "Alex Rivera",
-  email: "alex.rivera@example.com",
-  emailVerified: true,
-  photoURL:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
-  uid: "mock_user_7f3a9b2e1c8d4a56",
-  signInMethod: "Google",
-  memberSince: "2024-06-15T10:00:00.000Z",
-  lastSignIn: "2026-05-02T14:30:00.000Z",
-};
+import axios from "axios";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
   const [copied, setCopied] = useState(false);
-  const p = MOCK_PROFILE;
+  const [open, setOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const copyUid = async () => {
     try {
-      await navigator.clipboard.writeText(p.uid);
+      await navigator.clipboard.writeText(user?.uid || "");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   };
+
+  if (!user) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
+          <p className="text-gray-500 dark:text-gray-400">
+            Please login to view your profile
+          </p>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  const displayName =
+    user.displayName || user.email?.split("@")[0] || "User";
+
+  const photoURL = user.photoURL;
+
+  const emailVerified = user.emailVerified ?? false;
+
+  const memberSince = user.metadata?.creationTime;
+  const lastSignIn = user.metadata?.lastSignInTime;
 
   return (
     <>
@@ -40,114 +52,202 @@ export default function ProfilePage() {
 
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 px-4 py-16">
         <div className="max-w-2xl mx-auto">
+
+          {/* HEADER */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 Your profile
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Preview data (mock)
+                Real account data
               </p>
             </div>
+
             <Link
               href="/items"
-              className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline shrink-0"
+              className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
             >
               Browse products →
             </Link>
           </div>
 
+          {/* CARD */}
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-lg overflow-hidden">
+
+            {/* TOP */}
             <div className="p-8 flex flex-col sm:flex-row gap-6 sm:items-center border-b border-gray-200 dark:border-gray-800">
-              {p.photoURL ? (
-                <Image
-                  src={p.photoURL}
-                  alt=""
-                  width={96}
-                  height={96}
-                  className="w-24 h-24 rounded-2xl object-cover border border-gray-200 dark:border-gray-700 shrink-0"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-3xl font-bold shrink-0">
-                  {p.email.charAt(0).toUpperCase()}
-                </div>
-              )}
+
+              {/* AVATAR */}
+              <div className="relative w-24 h-24">
+
+                {photoURL ? (
+                  <Image
+                    src={photoURL}
+                    alt="profile"
+                    width={96}
+                    height={96}
+                    className="w-24 h-24 rounded-2xl object-cover border"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-2xl font-bold shadow-md">
+                    {displayName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </div>
+                )}
+
+                {/* EDIT ICON */}
+                <button
+                  onClick={() => setOpen(true)}
+                  className="absolute -bottom-2 -right-2 bg-white dark:bg-gray-800 border rounded-full p-1 shadow"
+                >
+                  ✏️
+                </button>
+              </div>
+
+              {/* INFO */}
               <div className="min-w-0 flex-1">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 truncate">
-                  {p.displayName}
+                  {displayName}
                 </h2>
+
                 <p className="text-gray-600 dark:text-gray-300 truncate mt-1">
-                  {p.email}
+                  {user.email}
                 </p>
+
                 <div className="flex flex-wrap gap-2 mt-3">
-                  {p.emailVerified ? (
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300">
+                  {emailVerified ? (
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300">
                       Email verified
                     </span>
                   ) : (
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200">
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200">
                       Email not verified
+                    </span>
+                  )}
+
+                  {user?.role && (
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                      {user.role}
                     </span>
                   )}
                 </div>
               </div>
             </div>
 
+            {/* DETAILS */}
             <dl className="p-8 space-y-5 text-sm">
-              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
-                <dt className="text-gray-500 dark:text-gray-400">User ID</dt>
-                <dd className="flex items-center gap-2 min-w-0">
-                  <code className="text-gray-900 dark:text-gray-100 truncate font-mono text-xs sm:text-sm">
-                    {p.uid}
-                  </code>
+
+              <div className="flex justify-between">
+                <dt className="text-gray-500">User ID</dt>
+                <dd className="flex gap-2 items-center">
+                  <code className="truncate text-xs">{user.uid}</code>
                   <button
-                    type="button"
                     onClick={copyUid}
-                    className="shrink-0 text-indigo-600 dark:text-indigo-400 hover:underline text-xs font-medium"
+                    className="text-indigo-600 text-xs"
                   >
                     {copied ? "Copied" : "Copy"}
                   </button>
                 </dd>
               </div>
-              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
-                <dt className="text-gray-500 dark:text-gray-400">Sign-in method</dt>
-                <dd className="text-gray-900 dark:text-gray-100">{p.signInMethod}</dd>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
-                <dt className="text-gray-500 dark:text-gray-400">Member since</dt>
-                <dd className="text-gray-900 dark:text-gray-100">
-                  {new Date(p.memberSince).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+
+              <div className="flex justify-between">
+                <dt className="text-gray-500">Member since</dt>
+                <dd>
+                  {memberSince
+                    ? new Date(memberSince).toLocaleDateString()
+                    : "N/A"}
                 </dd>
               </div>
-              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
-                <dt className="text-gray-500 dark:text-gray-400">Last sign-in</dt>
-                <dd className="text-gray-900 dark:text-gray-100">
-                  {new Date(p.lastSignIn).toLocaleString(undefined, {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })}
+
+              <div className="flex justify-between">
+                <dt className="text-gray-500">Last sign-in</dt>
+                <dd>
+                  {lastSignIn
+                    ? new Date(lastSignIn).toLocaleString()
+                    : "N/A"}
                 </dd>
               </div>
             </dl>
 
-            {user && (
-              <div className="px-8 pb-8 flex flex-col sm:flex-row gap-3">
-                <button
-                  type="button"
-                  onClick={() => logout()}
-                  className="cursor-pointer px-5 py-2.5 rounded-xl border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition"
-                >
-                  Sign out
-                </button>
-              </div>
-            )}
+            {/* ACTION */}
+            <div className="px-8 pb-8">
+              <button
+                onClick={logout}
+                className="px-5 py-2.5 rounded-xl border border-red-200 text-red-600 text-sm"
+              >
+                Sign out
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* MODAL */}
+      {open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl w-80">
+
+            <h2 className="text-lg font-semibold mb-4">
+              Update Profile Picture
+            </h2>
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                setUploading(true);
+
+                const formData = new FormData();
+                formData.append("image", file);
+
+                // 🔥 Upload to ImgBB
+                const imgbbRes = await axios.post(
+                  `https://api.imgbb.com/1/upload?key=140f2d0db1502e65c2c0ee7bfc66be98`,
+                  formData
+                );
+
+                const imageUrl = imgbbRes.data.data.url;
+
+                // 💾 Save to DB
+                await axios.patch(
+                  "http://localhost:5001/users/avatar",
+                  {
+                    email: user.email,
+                    photoURL: imageUrl,
+                  }
+                );
+
+                setUploading(false);
+                setOpen(false);
+
+                // instant update (no reload needed)
+                window.location.reload();
+              }}
+            />
+
+            {uploading && (
+              <p className="text-sm mt-3 text-gray-500">
+                Uploading...
+              </p>
+            )}
+
+            <button
+              onClick={() => setOpen(false)}
+              className="mt-4 text-sm text-red-500"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </>

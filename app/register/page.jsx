@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import axios from "axios";
 
 export default function Register() {
   const router = useRouter();
@@ -39,15 +40,28 @@ export default function Register() {
 };
 
   const handleGoogleRegister = async () => {
-    const provider = new GoogleAuthProvider();
+  const provider = new GoogleAuthProvider();
 
-    try {
-      await signInWithPopup(auth, provider);
-      router.push("/");
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+  try {
+    const result = await signInWithPopup(auth, provider);
+
+    const user = result.user;
+
+    // save / upsert user in DB
+    await axios.post("http://localhost:5001/users", {
+      email: user.email,
+      role: "user",
+      createdAt: new Date(),
+      photoURL: user.photoURL || "",
+      name: user.displayName || "",
+      provider: "google",
+    });
+
+    router.push("/");
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-950 px-4">
