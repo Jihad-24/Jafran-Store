@@ -13,6 +13,8 @@ export default function ProfilePage() {
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const copyUid = async () => {
     try {
@@ -36,15 +38,15 @@ export default function ProfilePage() {
     );
   }
 
-  const displayName =
-    user.displayName || user.email?.split("@")[0] || "User";
+  const displayName = user.displayName || user.email?.split("@")[0] || "User";
 
   const photoURL = user.photoURL;
 
   const emailVerified = user.emailVerified ?? false;
 
-  const memberSince = user.metadata?.creationTime;
-  const lastSignIn = user.metadata?.lastSignInTime;
+  const memberSince = user?.metadata?.creationTime || user?.createdAt;
+
+  const lastSignIn = user?.metadata?.lastSignInTime || user?.lastLogin;
 
   return (
     <>
@@ -52,7 +54,6 @@ export default function ProfilePage() {
 
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 px-4 py-16">
         <div className="max-w-2xl mx-auto">
-
           {/* HEADER */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
             <div>
@@ -74,13 +75,10 @@ export default function ProfilePage() {
 
           {/* CARD */}
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-lg overflow-hidden">
-
             {/* TOP */}
             <div className="p-8 flex flex-col sm:flex-row gap-6 sm:items-center border-b border-gray-200 dark:border-gray-800">
-
               {/* AVATAR */}
               <div className="relative w-24 h-24">
-
                 {photoURL ? (
                   <Image
                     src={photoURL}
@@ -141,15 +139,11 @@ export default function ProfilePage() {
 
             {/* DETAILS */}
             <dl className="p-8 space-y-5 text-sm">
-
               <div className="flex justify-between">
                 <dt className="text-gray-500">User ID</dt>
                 <dd className="flex gap-2 items-center">
                   <code className="truncate text-xs">{user.uid}</code>
-                  <button
-                    onClick={copyUid}
-                    className="text-indigo-600 text-xs"
-                  >
+                  <button onClick={copyUid} className="text-indigo-600 text-xs">
                     {copied ? "Copied" : "Copy"}
                   </button>
                 </dd>
@@ -167,9 +161,7 @@ export default function ProfilePage() {
               <div className="flex justify-between">
                 <dt className="text-gray-500">Last sign-in</dt>
                 <dd>
-                  {lastSignIn
-                    ? new Date(lastSignIn).toLocaleString()
-                    : "N/A"}
+                  {lastSignIn ? new Date(lastSignIn).toLocaleString() : "N/A"}
                 </dd>
               </div>
             </dl>
@@ -191,60 +183,114 @@ export default function ProfilePage() {
       {open && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl w-80">
-
             <h2 className="text-lg font-semibold mb-4">
               Update Profile Picture
             </h2>
 
+            {/* hidden input */}
             <input
+              id="fileInput"
               type="file"
               accept="image/*"
-              onChange={async (e) => {
-                const file = e.target.files[0];
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
                 if (!file) return;
 
-                setUploading(true);
-
-                const formData = new FormData();
-                formData.append("image", file);
-
-                // 🔥 Upload to ImgBB
-                const imgbbRes = await axios.post(
-                  `https://api.imgbb.com/1/upload?key=140f2d0db1502e65c2c0ee7bfc66be98`,
-                  formData
-                );
-
-                const imageUrl = imgbbRes.data.data.url;
-
-                // 💾 Save to DB
-                await axios.patch(
-                  "http://localhost:5001/users/avatar",
-                  {
-                    email: user.email,
-                    photoURL: imageUrl,
-                  }
-                );
-
-                setUploading(false);
-                setOpen(false);
-
-                // instant update (no reload needed)
-                window.location.reload();
+                setSelectedFile(file);
+                setPreview(URL.createObjectURL(file));
               }}
             />
 
-            {uploading && (
-              <p className="text-sm mt-3 text-gray-500">
-                Uploading...
-              </p>
-            )}
+            {/* DROP ZONE */}
+            <label
+              htmlFor="fileInput"
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
 
-            <button
-              onClick={() => setOpen(false)}
-              className="mt-4 text-sm text-red-500"
+                const file = e.dataTransfer.files?.[0];
+                if (!file) return;
+
+                setSelectedFile(file);
+                setPreview(URL.createObjectURL(file));
+              }}
+              className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 dark:border-gray-600 rounded-xl p-6 cursor-pointer hover:border-indigo-500 transition"
             >
-              Cancel
-            </button>
+              {preview ? (
+                <Image
+                  src={preview}
+                  alt="preview"
+                  width={120}
+                  height={120}
+                  className="rounded-xl object-cover"
+                />
+              ) : (
+                <>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                    Drag & drop your image here
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    or click to browse
+                  </p>
+                </>
+              )}
+            </label>
+
+            {/* ACTIONS */}
+            <div className="flex gap-3 mt-5">
+              <button
+                onClick={async () => {
+                  if (!selectedFile) return;
+
+                  setUploading(true);
+
+                  const formData = new FormData();
+                  formData.append("image", selectedFile);
+
+                  try {
+                    const imgbbRes = await axios.post(
+                      `https://api.imgbb.com/1/upload?key=140f2d0db1502e65c2c0ee7bfc66be98`,
+                      formData,
+                    );
+
+                    const imageUrl = imgbbRes.data.data.url;
+
+                    await axios.patch("http://localhost:5001/users/avatar", {
+                      email: user.email,
+                      photoURL: imageUrl,
+                    });
+
+                    setUploading(false);
+                    setOpen(false);
+                    setSelectedFile(null);
+                    setPreview(null);
+
+                    window.location.reload();
+                  } catch (err) {
+                    console.error(err);
+                    setUploading(false);
+                  }
+                }}
+                disabled={!selectedFile || uploading}
+                className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm disabled:opacity-50"
+              >
+                {uploading ? "Uploading..." : "Save"}
+              </button>
+
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  setSelectedFile(null);
+                  setPreview(null);
+                }}
+                className="px-4 py-2 rounded-xl border text-sm"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

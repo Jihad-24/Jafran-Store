@@ -25,11 +25,8 @@ export default function Login() {
     const password = e.target.password.value;
 
     try {
-      if (loginMock(email, password)) {
-        router.push("/dashboard");
-        return;
-      }
       await signInWithEmailAndPassword(auth, email, password);
+
       router.push("/");
     } catch (err) {
       alert(err.message);
@@ -39,28 +36,28 @@ export default function Login() {
   };
 
   const handleGoogleLogin = async () => {
-  const provider = new GoogleAuthProvider();
+    const provider = new GoogleAuthProvider();
 
-  try {
-    const result = await signInWithPopup(auth, provider);
+    try {
+      const result = await signInWithPopup(auth, provider);
 
-    const user = result.user;
+      const user = result.user;
 
-    // save / upsert user in DB
-    await axios.post("http://localhost:5001/users", {
-      email: user.email,
-      role: "user",
-      createdAt: new Date(),
-      photoURL: user.photoURL || "",
-      name: user.displayName || "",
-      provider: "google",
-    });
+      // save / upsert user in DB
+      await axios.post("http://localhost:5001/users", {
+        email: user.email,
+        role: "user",
+        createdAt: new Date(),
+        photoURL: user.photoURL || "",
+        name: user.displayName || "",
+        provider: "google",
+      });
 
-    router.push("/");
-  } catch (err) {
-    alert(err.message);
-  }
-};
+      router.push("/");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-950 px-4">
@@ -74,11 +71,7 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-3">
-          <input
-            name="email"
-            placeholder="Email"
-            className="input"
-          />
+          <input name="email" placeholder="Email" className="input" />
           <input
             name="password"
             type="password"
