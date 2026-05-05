@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import toast from "react-hot-toast";
 
 export default function AddItem() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function AddItem() {
     e.preventDefault();
 
     if (!imageFile) {
-      alert("Please upload an image");
+      toast.error("Please upload an image");
       return;
     }
 
@@ -74,7 +75,7 @@ export default function AddItem() {
         newItem,
       );
 
-      alert("Item added successfully");
+      toast.success("Item added successfully");
       // 🔥 reset everything
       setTimeout(() => {
         e.target.reset();
@@ -92,7 +93,7 @@ export default function AddItem() {
       // router.push("/items");
     } catch (error) {
       console.error(error);
-      alert("Failed to add item");
+      toast.error("Failed to add item");
     } finally {
       setLoading(false); // 🔥 stop loading
     }

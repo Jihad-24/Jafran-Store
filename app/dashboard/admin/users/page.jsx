@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DataTable from "@/components/dashboard/DataTable";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 export default function AdminUsersPage() {
   const [rows, setRows] = useState([]);

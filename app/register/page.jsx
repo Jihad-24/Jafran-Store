@@ -9,6 +9,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Register() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function Register() {
 
       router.push("/");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -59,7 +60,7 @@ export default function Register() {
 
       router.push("/");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

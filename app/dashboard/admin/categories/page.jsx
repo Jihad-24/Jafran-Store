@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import DataTable from "@/components/dashboard/DataTable";
 import { getCategories } from "@/lib/mockDashboardApi";
+import toast from "react-hot-toast";
 
 export default function AdminCategoriesPage() {
   const [rows, setRows] = useState([]);
@@ -43,9 +44,9 @@ export default function AdminCategoriesPage() {
         rows={rows}
         filterKeys={["name", "slug"]}
         pageSize={5}
-        onView={(row) => window.alert(`View category: ${row.name} (mock)`)}
-        onEdit={(row) => window.alert(`Edit category: ${row.name} (mock)`)}
-        onDelete={(row) => window.alert(`Delete category: ${row.name} (mock)`)}
+        onView={(row) => toast.success(`Viewing category: ${row.name} (mock)`)}
+        onEdit={(row) => toast.info(`Editing category: ${row.name} (mock)`)}
+        onDelete={(row) => toast.error(`Deleting category: ${row.name} (mock)`)}
       />
     </div>
   );

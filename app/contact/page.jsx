@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import toast from "react-hot-toast";
 
 export default function Contact() {
   const [loading, setLoading] = useState(false);
@@ -12,7 +13,7 @@ export default function Contact() {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      alert("Message sent successfully!");
+      toast.success("Message sent successfully!");
       setLoading(false);
       e.target.reset();
     }, 1000);

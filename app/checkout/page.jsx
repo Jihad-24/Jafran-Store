@@ -72,7 +72,7 @@ export default function CheckoutPage() {
       router.push(`/checkout/success?id=${orderId}`);
     } catch (err) {
       console.error("Order failed:", err);
-      alert("Order failed. Try again.");
+      t("Order failed. Try again.");
     } finally {
       setSubmitting(false);
     }

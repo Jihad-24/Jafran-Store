@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { itemsData } from "@/data/items";
+import toast from "react-hot-toast";
 
 export default function Manage() {
   const [items, setItems] = useState([]);
@@ -47,10 +48,10 @@ export default function Manage() {
 
       setItems((prev) => prev.filter((item) => item._id !== id));
 
-      alert("Item deleted successfully ✅");
+      toast.success("Item deleted successfully ✅");
     } catch (error) {
       console.error("Delete failed", error);
-      alert("Failed to delete item ❌");
+      toast.error("Failed to delete item ❌");
     }
   };
 

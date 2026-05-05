@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { MOCK_DEMO_HINT } from "@/lib/mockAuth";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function Login() {
 
       router.push("/");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -54,7 +55,7 @@ export default function Login() {
 
       router.push("/");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
