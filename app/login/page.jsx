@@ -103,6 +103,21 @@ export default function Login() {
           />
           Continue with Google
         </button>
+        <div className="my-4 flex items-center gap-2">
+          <div className="h-px flex-1 bg-gray-300 dark:bg-gray-700"></div>
+          {/* <span className="text-sm text-gray-500 dark:text-gray-400">OR</span> */}
+          <div className="h-px flex-1 bg-gray-300 dark:bg-gray-700"></div>
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+          {" "}
+          Don't have an account?{" "}
+          <a
+            href="/register"
+            className="text-indigo-600 dark:text-indigo-500 hover:underline"
+          >
+            Register
+          </a>
+        </p>
       </div>
     </div>
   );

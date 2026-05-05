@@ -65,7 +65,7 @@ export default function HeroBanner() {
                 {banner.link && (
                   <div className="mt-8">
                     <Link
-                      href={banner.link}
+                      href={`/items`}
                       className="px-6 py-3 rounded-full bg-white text-black hover:bg-gray-200 transition"
                     >
                       Explore Now
