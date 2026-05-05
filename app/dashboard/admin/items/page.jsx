@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DataTable from "@/components/dashboard/DataTable";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 export default function AdminProductsPage() {
   const [rows, setRows] = useState([]);
@@ -14,6 +15,7 @@ export default function AdminProductsPage() {
   const [deleteProduct, setDeleteProduct] = useState(null);
   const [editImageFiles, setEditImageFiles] = useState([]);
   const [editPreviews, setEditPreviews] = useState([]);
+  const [updating, setUpdating] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
@@ -68,7 +70,7 @@ export default function AdminProductsPage() {
     const newFiles = Array.from(files);
 
     if (editPreviews.length + newFiles.length > 5) {
-      alert("Max 5 images allowed");
+      toast.error("Max 5 images allowed");
       return;
     }
 
@@ -110,6 +112,7 @@ export default function AdminProductsPage() {
       setEditProduct(null);
     } catch (err) {
       console.error("Update failed:", err);
+      toast.error("Failed to update product.");
     }
   };
 
@@ -453,14 +456,17 @@ export default function AdminProductsPage() {
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => setEditProduct(null)}
-                className="px-4 py-2 border rounded"
+                className="px-4 py-2 border rounded cursor-pointer"
               >
                 Cancel
               </button>
 
               <button
+                disabled={updating}
                 onClick={async () => {
                   try {
+                    setUpdating(true);
+
                     let uploadedUrls = [];
 
                     if (editImageFiles.length > 0) {
@@ -486,14 +492,25 @@ export default function AdminProductsPage() {
                       ...form,
                       images: [...finalImages, ...uploadedUrls],
                     });
+
+                    toast.success("✅ Product updated successfully");
                   } catch (err) {
                     console.error(err);
-                    alert("Update failed");
+                    toast.error("❌ Update failed");
+                  } finally {
+                    setUpdating(false);
                   }
                 }}
                 className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer"
               >
-                Save Changes
+                {updating ? (
+                  <>
+                    <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </button>
             </div>
           </div>
@@ -513,14 +530,14 @@ export default function AdminProductsPage() {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteProduct(null)}
-                className="px-3 py-1 border rounded"
+                className="px-3 py-1 border rounded cursor-pointer"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleDeleteProduct}
-                className="px-3 py-1 bg-red-600 text-white rounded"
+                className="px-3 py-1 bg-red-600 text-white rounded cursor-pointer"
               >
                 Delete
               </button>
