@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
-import { getUsers, getOrders } from "@/lib/adminApi";
+import { getUsers, getOrders, getBanners } from "@/lib/adminApi";
 import OverviewCharts from "./OverviewCharts";
 
 export default function AdminOverview() {
@@ -21,9 +21,10 @@ export default function AdminOverview() {
       setLoading(true);
 
       try {
-        const [users, orders] = await Promise.all([
+        const [users, orders, banners] = await Promise.all([
           getUsers(user?.email),
           getOrders(user?.email),
+          getBanners(user?.email),
         ]);
 
         if (cancel) return;
@@ -54,7 +55,7 @@ export default function AdminOverview() {
             {
               id: 4,
               label: "Banners",
-              value: 0,
+              value: banners.length,
               hint: "CMS banners",
             },
           ],
