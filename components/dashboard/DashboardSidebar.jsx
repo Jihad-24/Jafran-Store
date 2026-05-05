@@ -16,6 +16,7 @@ const userNav = [
 const adminNav = [
   { href: "/dashboard", label: "Overview", icon: "◆" },
   { href: "/dashboard/admin/users", label: "Manage Users", icon: "▣" },
+  { href: "/dashboard/admin/orders", label: "Manage Orders", icon: "▤" },
   { href: "/dashboard/admin/items", label: "Manage Items", icon: "▤" },
   { href: "/dashboard/admin/add", label: "Add Item", icon: "✚" },
   { href: "/dashboard/admin/banner", label: "Manage Banner", icon: "✚" },

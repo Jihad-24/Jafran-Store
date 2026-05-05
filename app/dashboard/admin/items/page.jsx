@@ -5,88 +5,124 @@ import DataTable from "@/components/dashboard/DataTable";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 
-export default function AdminItemsPage() {
+export default function AdminProductsPage() {
   const [rows, setRows] = useState([]);
   const { user } = useAuth();
-  const [viewOrder, setViewOrder] = useState(null);
-  const [editOrder, setEditOrder] = useState(null);
-  const [deleteOrder, setDeleteOrder] = useState(null);
+
+  const [viewProduct, setViewProduct] = useState(null);
+  const [editProduct, setEditProduct] = useState(null);
+  const [deleteProduct, setDeleteProduct] = useState(null);
+  const [editImageFiles, setEditImageFiles] = useState([]);
+  const [editPreviews, setEditPreviews] = useState([]);
 
   const [form, setForm] = useState({
-    status: "",
-    payment: "",
+    title: "",
+    price: "",
+    category: "",
+    discount: "",
   });
 
-  const getAdminOrders = async () => {
+  // ✅ Fetch Products
+  const getAdminProducts = async () => {
     const res = await axios.get(
-      `https://jafran-store-server.vercel.app/orders?email=${user?.email}`,
+      `https://jafran-store-server.vercel.app/products`,
     );
 
-    return res.data.data.map((o) => ({
-      id: o.id,
-      customer: o.customer,
-      customerName: o.customer?.name,
-      email: o.customer?.email,
-      total: o.total,
-      payment: o.payment,
-      status: o.status,
-
-      placedAt: new Date(o.placedAt).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-      }),
-
-      itemCount: o.items?.length || 0,
-
-      items: o.items, // 👈 ADD THIS
+    return res.data.map((p) => ({
+      id: p._id,
+      title: p.title,
+      category: p.category,
+      price: p.price,
+      oldPrice: p.oldPrice,
+      discount: p.discount,
+      rating: p.rating,
+      ratingCount: p.ratingCount,
+      delivery: p.delivery,
+      description: p.description,
+      images: p.images?.length ? p.images : p.image ? [p.image] : [],
     }));
   };
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchProducts = async () => {
       try {
-        const data = await getAdminOrders();
+        const data = await getAdminProducts();
         setRows(data);
       } catch (err) {
-        console.error("Failed to load users:", err);
+        console.error("Failed to load products:", err);
       }
     };
 
-    fetchUsers();
-  }, [user?.email]);
+    fetchProducts();
+  }, []);
 
-  const handleUpdateOrder = async () => {
+  useEffect(() => {
+    return () => {
+      editPreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [editPreviews]);
+
+  const handleEditImageChange = (files) => {
+    if (!files || files.length === 0) return;
+
+    const newFiles = Array.from(files);
+
+    if (editPreviews.length + newFiles.length > 5) {
+      alert("Max 5 images allowed");
+      return;
+    }
+
+    setEditImageFiles((prev) => [...prev, ...newFiles]);
+
+    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+
+    setEditPreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const handleEditDrop = (e) => {
+    e.preventDefault();
+    handleEditImageChange(e.dataTransfer.files);
+  };
+
+  const handleEditDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  // ✅ Update Product
+  const handleUpdateProduct = async (updatedData) => {
+    console.log(updatedData);
+    if (!editProduct?.id) {
+      console.error("Missing product ID");
+      return;
+    }
     try {
       await axios.patch(
-        `https://jafran-store-server.vercel.app/orders/${editOrder.id}?email=${user?.email}`,
-        {
-          status: form.status,
-          payment: form.payment,
-        },
+        `https://jafran-store-server.vercel.app/products/${editProduct.id}`,
+        updatedData,
       );
 
-      // update UI instantly
       setRows((prev) =>
-        prev.map((o) => (o.id === editOrder.id ? { ...o, ...form } : o)),
+        prev.map((p) =>
+          p.id === editProduct.id ? { ...p, ...updatedData } : p,
+        ),
       );
 
-      setEditOrder(null);
+      setEditProduct(null);
     } catch (err) {
       console.error("Update failed:", err);
     }
   };
 
-  const handleDeleteOrder = async () => {
+  // ✅ Delete Product
+  const handleDeleteProduct = async () => {
     try {
       await axios.delete(
-        `https://jafran-store-server.vercel.app/orders/${deleteOrder.id}?email=${user?.email}`,
+        `https://jafran-store-server.vercel.app/products/${deleteProduct.id}`,
       );
 
-      // remove from UI instantly
-      setRows((prev) => prev.filter((o) => o.id !== deleteOrder.id));
+      setRows((prev) => prev.filter((p) => p.id !== deleteProduct.id));
 
-      setDeleteOrder(null);
+      setDeleteProduct(null);
     } catch (err) {
       console.error("Delete failed:", err);
     }
@@ -96,258 +132,394 @@ export default function AdminItemsPage() {
     <div className="max-w-6xl mx-auto space-y-6 animate-fade">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
-          Manage Orders
+          Manage Products
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Catalog overview (mock). Use filter to search title, SKU, or category.
+          View, edit and delete products.
         </p>
       </div>
 
       <DataTable
         columns={[
-          { key: "id", label: "Order ID", sortable: true },
-
-          { key: "customerName", label: "Customer", sortable: true },
-
-          { key: "email", label: "Email", sortable: true },
-
           {
-            key: "total",
-            label: "Total",
-            sortable: true,
-            render: (r) => <span className="tabular-nums">${r.total}</span>,
-          },
-
-          {
-            key: "payment",
-            label: "Payment",
-            sortable: true,
-          },
-
-          {
-            key: "status",
-            label: "Status",
+            key: "title",
+            label: "Product",
             sortable: true,
             render: (r) => (
-              <span
-                className={
-                  r.status === "pending"
-                    ? "text-amber-500"
-                    : r.status === "paid"
-                      ? "text-emerald-500"
-                      : "text-red-500"
-                }
-              >
-                {r.status}
-              </span>
+              <div className="flex items-center gap-3">
+                <img
+                  src={r.images?.[0] || "/placeholder.png"}
+                  alt={r.title}
+                  className="w-10 h-10 object-cover rounded"
+                />
+                <span className="text-sm font-medium">{r.title}</span>
+              </div>
             ),
           },
 
-          { key: "itemCount", label: "Items", sortable: true },
+          { key: "category", label: "Category", sortable: true },
 
-          { key: "placedAt", label: "Date", sortable: true },
+          {
+            key: "price",
+            label: "Price",
+            sortable: true,
+            render: (r) => <span>${r.price}</span>,
+          },
+
+          {
+            key: "discount",
+            label: "Discount",
+            sortable: true,
+            render: (r) => <span>{r.discount}%</span>,
+          },
+
+          {
+            key: "rating",
+            label: "Rating",
+            sortable: true,
+            render: (r) => (
+              <span>
+                ⭐ {r.rating} ({r.ratingCount})
+              </span>
+            ),
+          },
         ]}
         rows={rows}
-        filterKeys={["title", "sku", "category", "status"]}
+        filterKeys={["title", "category"]}
         pageSize={5}
-        onView={(row) => setViewOrder(row)}
+        onView={(row) => setViewProduct(row)}
         onEdit={(row) => {
-          setEditOrder(row);
+          setEditProduct(row);
           setForm({
-            status: row.status,
-            payment: row.payment,
+            title: row.title,
+            price: row.price,
+            category: row.category,
+            discount: row.discount,
+            oldPrice: row.oldPrice,
+            description: row.description,
           });
+
+          // preload existing images
+          setEditPreviews(row.images || []);
+          setEditImageFiles([]);
         }}
-        onDelete={(row) => setDeleteOrder(row)}
+        onDelete={(row) => setDeleteProduct(row)}
       />
 
-      {viewOrder && (
+      {/* ✅ VIEW PRODUCT */}
+      {viewProduct && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-[550px] max-h-[85vh] overflow-y-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Order Details
-              </h2>
+          <div className="bg-white dark:bg-gray-950 rounded-xl w-[900px] max-h-[90vh] overflow-y-auto">
+            {/* HEADER */}
+            <div className="flex justify-between items-center px-6 py-4 border-b dark:border-gray-800">
+              <h2 className="text-lg font-semibold">Product Details</h2>
+              <button onClick={() => setViewProduct(null)}>✕</button>
+            </div>
 
+            <div className="p-6 grid md:grid-cols-2 gap-8">
+              {/* IMAGES */}
+              <div className="grid grid-cols-2 gap-3">
+                {viewProduct.images?.length > 0 ? (
+                  viewProduct.images.map((img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      className="w-full h-40 object-cover rounded-lg"
+                    />
+                  ))
+                ) : (
+                  <div className="text-sm text-gray-400">No images</div>
+                )}
+              </div>
+
+              {/* INFO */}
+              <div className="space-y-4">
+                <span className="text-xs uppercase text-gray-400">
+                  {viewProduct.category}
+                </span>
+
+                <h1 className="text-2xl font-bold">{viewProduct.title}</h1>
+
+                <div className="flex items-center gap-2 text-sm">
+                  ⭐ {viewProduct.rating} ({viewProduct.ratingCount})
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl font-bold">
+                    ৳{viewProduct.price}
+                  </span>
+
+                  {viewProduct.oldPrice && (
+                    <span className="line-through text-gray-400">
+                      ৳{viewProduct.oldPrice}
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-sm text-gray-500">
+                  {viewProduct.description}
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <p>
+                    <b>Discount:</b> {viewProduct.discount}%
+                  </p>
+                  <p>
+                    <b>Delivery:</b> {viewProduct.delivery}
+                  </p>
+                  <p>
+                    <b>Stock:</b> In Stock
+                  </p>
+                  <p>
+                    <b>SKU:</b> {viewProduct.id?.slice(-6)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end p-4">
               <button
-                onClick={() => setViewOrder(null)}
-                className="text-gray-500 hover:text-red-500 text-xl"
+                onClick={() => setViewProduct(null)}
+                className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
               >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ EDIT PRODUCT */}
+      {editProduct && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-950 rounded-xl w-[900px] max-h-[90vh] overflow-y-auto p-6 space-y-6">
+            {/* HEADER */}
+            <div className="flex justify-between items-center border-b dark:border-gray-800 pb-3">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Edit Product
+              </h2>
+              <button onClick={() => setEditProduct(null)} className="text-xl">
                 ✕
               </button>
             </div>
 
-            <div className="p-6 space-y-6">
-              {/* Order Info */}
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-gray-500">Order ID</p>
-                  <p className="font-medium">{viewOrder.id}</p>
-                </div>
+            {/* IMAGE UPLOAD (your same design) */}
+            <div
+              onDrop={handleEditDrop}
+              onDragOver={handleEditDragOver}
+              className="border-2 border-dashed border-gray-300 dark:border-white/30 rounded-xl p-6 text-center cursor-pointer hover:border-pink-500"
+            >
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => handleEditImageChange(e.target.files)}
+                className="hidden"
+                id="editImageUpload"
+              />
 
-                <div>
-                  <p className="text-gray-500">Date</p>
-                  <p className="font-medium">{viewOrder.placedAt}</p>
-                </div>
-
-                <div>
-                  <p className="text-gray-500">Payment</p>
-                  <p className="font-medium">{viewOrder.payment}</p>
-                </div>
-
-                <div>
-                  <p className="text-gray-500">Status</p>
-                  <p className="font-medium capitalize">{viewOrder.status}</p>
-                </div>
-              </div>
-
-              {/* Total */}
-              <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                <span className="text-sm text-gray-600 dark:text-gray-300">
-                  Total Amount
-                </span>
-                <span className="text-lg font-bold text-gray-900 dark:text-white">
-                  ${viewOrder.total}
-                </span>
-              </div>
-
-              {/* Customer */}
-              <div className="border-t pt-4 border-gray-200 dark:border-gray-700">
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">
-                  Customer Info
-                </h3>
-
-                <div className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
-                  <p>
-                    <b>Name:</b> {viewOrder?.customer?.name}
+              <label htmlFor="editImageUpload" className="cursor-pointer block">
+                {editPreviews.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {editPreviews.map((src, i) => (
+                      <img
+                        key={i}
+                        src={src}
+                        className="h-24 w-full object-cover rounded-lg"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 dark:text-white/60">
+                    Drag & drop or click to upload images
                   </p>
-                  <p>
-                    <b>Email:</b> {viewOrder?.customer?.email}
-                  </p>
-                  <p>
-                    <b>Phone:</b> {viewOrder?.customer?.phone}
-                  </p>
-                  <p>
-                    <b>Address:</b> {viewOrder?.customer?.address},{" "}
-                    {viewOrder?.customer?.city}
-                  </p>
-
-                  {viewOrder.customer?.notes && (
-                    <p>
-                      <b>Notes:</b> {viewOrder.customer.notes}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Items */}
-              <div className="border-t pt-4 border-gray-200 dark:border-gray-700">
-                <h3 className="font-semibold mb-3 text-gray-900 dark:text-white">
-                  Items ({viewOrder.items?.length || 0})
-                </h3>
-
-                <div className="space-y-2">
-                  {viewOrder.items?.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between items-center bg-gray-50 dark:bg-gray-800 p-3 rounded-lg"
-                    >
-                      <div>
-                        <p className="font-medium text-sm">{item.title}</p>
-                        <p className="text-xs text-gray-500">Qty: {item.qty}</p>
-                      </div>
-
-                      <p className="font-semibold text-sm">${item.price}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="flex justify-end pt-2">
-                <button
-                  onClick={() => setViewOrder(null)}
-                  className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-sm"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {editOrder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-96 space-y-4">
-            <h2 className="text-lg font-semibold">Update Order</h2>
-
-            <div className="space-y-2">
-              <label className="text-sm">Status</label>
-              <select
-                className="w-full p-2 border rounded bg-white dark:bg-gray-800"
-                value={form.status}
-                onChange={(e) => setForm({ ...form, status: e.target.value })}
-              >
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+                )}
+              </label>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm">Payment</label>
-              <select
-                className="w-full p-2 border rounded bg-white dark:bg-gray-800"
-                value={form.payment}
-                onChange={(e) => setForm({ ...form, payment: e.target.value })}
-                disabled
-              >
-                <option value="cod">COD</option>
-                <option value="paid">Paid</option>
-              </select>
+            {/* REMOVE IMAGES */}
+            {editPreviews.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {editPreviews.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => {
+                      setEditImageFiles((prev) =>
+                        prev.filter((_, i) => i !== index),
+                      );
+                      setEditPreviews((prev) =>
+                        prev.filter((_, i) => i !== index),
+                      );
+                    }}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    Remove {index + 1}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* BASIC INFO */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-200">
+                Basic Information
+              </h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-gray-500">Title</label>
+                  <input
+                    className="w-full p-2 border rounded bg-transparent"
+                    value={form.title}
+                    onChange={(e) =>
+                      setForm({ ...form, title: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-500">Category</label>
+                  <input
+                    className="w-full p-2 border rounded bg-transparent"
+                    value={form.category}
+                    onChange={(e) =>
+                      setForm({ ...form, category: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="flex justify-end gap-2">
+            {/* PRICING */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-200">
+                Pricing
+              </h3>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="text-xs text-gray-500">Price</label>
+                  <input
+                    className="w-full p-2 border rounded bg-transparent"
+                    value={form.price}
+                    onChange={(e) =>
+                      setForm({ ...form, price: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-500">Old Price</label>
+                  <input
+                    className="w-full p-2 border rounded bg-transparent"
+                    value={form.oldPrice}
+                    onChange={(e) =>
+                      setForm({ ...form, oldPrice: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-500">Discount %</label>
+                  <input
+                    className="w-full p-2 border rounded bg-transparent"
+                    value={form.discount}
+                    onChange={(e) =>
+                      setForm({ ...form, discount: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* DESCRIPTION */}
+            <div>
+              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                Description
+              </h3>
+
+              <textarea
+                className="w-full p-3 border rounded bg-transparent"
+                rows={4}
+                value={form.description}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
+              />
+            </div>
+
+            {/* ACTIONS */}
+            <div className="flex justify-end gap-3 pt-2">
               <button
-                onClick={() => setEditOrder(null)}
-                className="px-3 py-1 border rounded"
+                onClick={() => setEditProduct(null)}
+                className="px-4 py-2 border rounded"
               >
                 Cancel
               </button>
 
               <button
-                onClick={handleUpdateOrder}
-                className="px-3 py-1 bg-blue-600 text-white rounded"
+                onClick={async () => {
+                  try {
+                    let uploadedUrls = [];
+
+                    if (editImageFiles.length > 0) {
+                      const uploadPromises = editImageFiles.map((file) => {
+                        const formData = new FormData();
+                        formData.append("image", file);
+
+                        return axios.post(
+                          `https://api.imgbb.com/1/upload?key=140f2d0db1502e65c2c0ee7bfc66be98`,
+                          formData,
+                        );
+                      });
+
+                      const responses = await Promise.all(uploadPromises);
+                      uploadedUrls = responses.map((res) => res.data.data.url);
+                    }
+
+                    const finalImages = editPreviews.filter((img) =>
+                      img.startsWith("http"),
+                    );
+
+                    await handleUpdateProduct({
+                      ...form,
+                      images: [...finalImages, ...uploadedUrls],
+                    });
+                  } catch (err) {
+                    console.error(err);
+                    alert("Update failed");
+                  }
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer"
               >
-                Save
+                Save Changes
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {deleteOrder && (
+      {/* ✅ DELETE PRODUCT */}
+      {deleteProduct && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-80 space-y-4">
-            <h2 className="text-lg font-semibold">Delete Order?</h2>
+            <h2 className="text-lg font-semibold">Delete Product?</h2>
 
-            <p className="text-sm text-gray-500">
-              Are you sure you want to delete order <b>{deleteOrder.id}</b>?
+            <p className="text-sm">
+              Delete <b>{deleteProduct.title}</b> ?
             </p>
 
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => setDeleteOrder(null)}
+                onClick={() => setDeleteProduct(null)}
                 className="px-3 py-1 border rounded"
               >
                 Cancel
               </button>
 
               <button
-                onClick={handleDeleteOrder}
+                onClick={handleDeleteProduct}
                 className="px-3 py-1 bg-red-600 text-white rounded"
               >
                 Delete

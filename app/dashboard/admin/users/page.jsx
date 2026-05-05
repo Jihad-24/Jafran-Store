@@ -138,7 +138,7 @@ export default function AdminUsersPage() {
           <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-96 space-y-4">
             <h2 className="text-lg font-semibold">Edit User</h2>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-sm">Role</label>
               <select
                 className="w-full p-2 border rounded 
@@ -151,7 +151,7 @@ export default function AdminUsersPage() {
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
               </select>
-            </div>
+            </div> */}
 
             <div className="space-y-2">
               <label className="text-sm">Status</label>
