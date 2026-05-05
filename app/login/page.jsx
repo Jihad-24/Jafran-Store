@@ -26,7 +26,7 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-
+      toast.success("Logged in successfully");
       router.push("/");
     } catch (err) {
       toast.error(err.message);
@@ -52,7 +52,7 @@ export default function Login() {
         name: user.displayName || "",
         provider: "google",
       });
-
+      toast.success("Logged in successfully");
       router.push("/");
     } catch (err) {
       toast.error(err.message);

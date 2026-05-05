@@ -32,6 +32,7 @@ export default function Register() {
         createdAt: new Date(),
       });
 
+      toast.success("Account created successfully");
       router.push("/");
     } catch (err) {
       toast.error(err.message);
@@ -57,7 +58,7 @@ export default function Register() {
         name: user.displayName || "",
         provider: "google",
       });
-
+      toast.success("Account created successfully");
       router.push("/");
     } catch (err) {
       toast.error(err.message);
@@ -106,7 +107,7 @@ export default function Register() {
           Sign up with Google
         </button>
 
-         <div className="my-4 flex items-center gap-2">
+        <div className="my-4 flex items-center gap-2">
           <div className="h-px flex-1 bg-gray-300 dark:bg-gray-700"></div>
           {/* <span className="text-sm text-gray-500 dark:text-gray-400">OR</span> */}
           <div className="h-px flex-1 bg-gray-300 dark:bg-gray-700"></div>
