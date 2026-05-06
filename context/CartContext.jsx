@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 const CartContext = createContext(null);
 
@@ -61,10 +62,8 @@ export function CartProvider({ children }) {
       qty,
     };
 
-    // 👤 guest
     if (!user?.email) {
       const cart = getGuestCart();
-
       const existing = cart.find((i) => i.productId === newItem.productId);
 
       let updated;
@@ -73,8 +72,10 @@ export function CartProvider({ children }) {
         updated = cart.map((i) =>
           i.productId === newItem.productId ? { ...i, qty: i.qty + qty } : i,
         );
+        toast.success("Updated quantity in cart");
       } else {
         updated = [...cart, newItem];
+        toast.success("Added to cart");
       }
 
       setItems(updated);
@@ -82,7 +83,6 @@ export function CartProvider({ children }) {
       return;
     }
 
-    // 🔐 logged in
     try {
       await axios.post("https://jafran-store-server.vercel.app/cart", {
         ...newItem,
@@ -94,8 +94,10 @@ export function CartProvider({ children }) {
       );
 
       setItems(res.data);
+      toast.success("Added to cart");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to add to cart");
     }
   };
 
@@ -103,33 +105,57 @@ export function CartProvider({ children }) {
   const updateQty = async (id, qty) => {
     if (qty < 1) return;
 
-    await axios.patch(`https://jafran-store-server.vercel.app/cart/${id}`, {
-      qty,
-    });
+    try {
+      await axios.patch(`https://jafran-store-server.vercel.app/cart/${id}`, {
+        qty,
+      });
 
-    setItems((prev) => prev.map((i) => (i._id === id ? { ...i, qty } : i)));
+      setItems((prev) => prev.map((i) => (i._id === id ? { ...i, qty } : i)));
+
+      toast.success("Quantity updated");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update quantity");
+    }
   };
 
   // ---------------- REMOVE ----------------
   const removeItem = async (id) => {
-    await axios.delete(`https://jafran-store-server.vercel.app/cart/${id}`);
+    try {
+      await axios.delete(`https://jafran-store-server.vercel.app/cart/${id}`);
 
-    setItems((prev) => prev.filter((i) => i._id !== id));
+      setItems((prev) => prev.filter((i) => i._id !== id));
+      toast.success("Item removed");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to remove item");
+    }
   };
 
   // ---------------- CLEAR ----------------
   const clearCart = async () => {
-    if (!user?.email) {
-      setGuestCart([]);
+    try {
+      if (!user?.email) {
+        setGuestCart([]);
+        setItems([]);
+        toast.success("Order placed");
+
+        toast.success("Cart cleared");
+        return;
+      }
+
+      await axios.delete(
+        `https://jafran-store-server.vercel.app/cart?email=${user.email}`,
+      );
+
       setItems([]);
-      return;
+      toast.success("Order placed");
+
+      toast.success("Cart cleared");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to clear cart");
     }
-
-    await axios.delete(
-      `https://jafran-store-server.vercel.app/cart?email=${user.email}`,
-    );
-
-    setItems([]);
   };
 
   // ---------------- REFRESH ----------------
