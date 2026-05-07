@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const CartContext = createContext(null);
 
@@ -19,6 +20,7 @@ const setGuestCart = (items) =>
 // ---------------- PROVIDER ----------------
 export function CartProvider({ children }) {
   const { user } = useAuth();
+  const router = useRouter();
 
   const [items, setItems] = useState([]);
   const [hydrated, setHydrated] = useState(false);

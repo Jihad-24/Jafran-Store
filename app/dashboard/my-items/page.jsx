@@ -42,10 +42,10 @@ export default function DashboardMyItemsPage() {
     <div className="max-w-6xl mx-auto space-y-6 animate-fade">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
-          My Items
+          My Orders
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Your listings (mock). Table supports pagination, filter, and sort.
+          Your listings. Table supports pagination, filter, and sort.
         </p>
       </div>
 

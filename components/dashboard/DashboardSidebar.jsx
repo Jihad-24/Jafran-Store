@@ -8,7 +8,7 @@ import { useTheme } from "@/context/ThemeContext";
 
 const userNav = [
   { href: "/dashboard", label: "Overview", icon: "◆" },
-  { href: "/dashboard/my-items", label: "My Items", icon: "◇" },
+  { href: "/dashboard/my-items", label: "My Orders", icon: "◇" },
   { href: "/dashboard/profile", label: "Profile", icon: "○" },
   { href: "/dashboard/settings", label: "Settings", icon: "◎" },
 ];
