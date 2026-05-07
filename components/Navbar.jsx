@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { useCart } from "@/context/CartContext";
+import Image from "next/image";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -32,11 +33,18 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100"
-        >
-          Jafran Store
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="Jafran Store"
+            width={40}
+            height={40}
+            className="rounded-full object-cover"
+          />
+
+          <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            Jafran Store
+          </span>
         </Link>
 
         {/* Desktop Links */}
