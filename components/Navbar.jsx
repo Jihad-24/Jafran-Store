@@ -36,7 +36,7 @@ export default function Navbar() {
           href="/"
           className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100"
         >
-          Odyssey
+          Jafran Store
         </Link>
 
         {/* Desktop Links */}

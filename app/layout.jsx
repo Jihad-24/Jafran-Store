@@ -5,7 +5,7 @@ import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
-  title: "Odyssey App",
+  title: "Jafran Store",
 };
 
 export default function RootLayout({ children }) {

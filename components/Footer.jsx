@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="bg-gray-900 dark:bg-black text-white py-10 border-t border-gray-800">
       <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between gap-6">
         <div>
-          <h3 className="font-bold text-lg">Odyssey</h3>
+          <h3 className="font-bold text-lg">Jafran Store</h3>
           <p className="text-gray-300 text-sm mt-2">
             Simple product management platform
           </p>
