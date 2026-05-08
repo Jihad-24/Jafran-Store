@@ -2,7 +2,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { itemsData } from "@/data/items";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import HeroBanner from "../components/HeroBanner";
@@ -74,37 +73,6 @@ export default function Home() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const testimonials = [
-    {
-      text: "This app is super clean and easy to use!",
-      name: "Alex Morgan",
-      productImg:
-        "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
-      bg: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-    },
-    {
-      text: "Managing products has never been this simple.",
-      name: "Sarah Khan",
-      productImg:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-      bg: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-    },
-    {
-      text: "Perfect UI and smooth experience!",
-      name: "John Doe",
-      productImg:
-        "https://images.unsplash.com/photo-1580910051074-3eb694886505",
-      bg: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-    },
-    {
-      text: "Super smooth experience and really user friendly UI!",
-      name: "Jihad Rahman",
-      productImg:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-      bg: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-    },
-  ];
-
   // 🔥 Fetch from backend
   useEffect(() => {
     fetch("https://jafran-store-server.vercel.app/products")
@@ -114,16 +82,6 @@ export default function Home() {
         setLoading(false);
       })
       .catch((err) => console.error(err));
-  }, []);
-
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
   }, []);
 
   return (
