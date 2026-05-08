@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import HeroBanner from "../components/HeroBanner";
 import Image from "next/image";
+import TestimonialsSection from "../components/TestimonialsSection";
 
 const StarIcon = ({ half = false, empty = false }) => (
   <span className="relative inline-block h-4 w-4 shrink-0">
@@ -309,95 +310,7 @@ export default function Home() {
       </section>
 
       {/* 5 Testimonials */}
-      <section className="py-24 overflow-hidden bg-gray-50 dark:bg-gray-950">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900 dark:text-gray-100">
-            What Users Say
-          </h2>
-
-          {/* viewport */}
-          <div className="relative max-w-4xl mx-auto overflow-hidden">
-            {/* slider */}
-            <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{
-                transform: `translateX(-${index * 100}%)`,
-              }}
-            >
-              {testimonials.map((item, i) => (
-                <div key={i} className="w-full flex-shrink-0 px-3">
-                  {/* CARD */}
-                  <div className="relative rounded-3xl overflow-hidden shadow-xl h-[360px]">
-                    {/* background image */}
-                    <div
-                      className="absolute inset-0 bg-cover bg-center scale-110"
-                      style={{
-                        backgroundImage: `url(${item.bg})`,
-                      }}
-                    />
-
-                    {/* dark overlay */}
-                    <div className="absolute inset-0 bg-black/60"></div>
-
-                    {/* content */}
-                    <div className="relative z-10 h-full flex items-center justify-between p-10 text-white gap-8">
-                      {/* LEFT TEXT */}
-                      <div className="max-w-md">
-                        <div className="text-6xl text-white/20 font-serif leading-none">
-                          “
-                        </div>
-
-                        <p className="text-xl leading-relaxed mt-2">
-                          {item.text}
-                        </p>
-
-                        <div className="flex items-center gap-3 mt-6">
-                          <div className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center font-bold">
-                            {item.name.charAt(0)}
-                          </div>
-
-                          <div>
-                            <p className="font-semibold">{item.name}</p>
-                            <p className="text-xs text-white/70">
-                              Verified Customer
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* RIGHT PRODUCT IMAGE */}
-                      <div className="hidden md:block">
-                        <div className="w-52 h-52 rounded-2xl overflow-hidden shadow-2xl border border-white/20">
-                          <img
-                            src={item.productImg}
-                            alt="product"
-                            className="w-full h-full object-cover hover:scale-110 transition duration-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* dots */}
-          <div className="flex justify-center gap-2 mt-8">
-            {testimonials.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setIndex(i)}
-                className={`w-2.5 h-2.5 rounded-full transition ${
-                  i === index
-                    ? "bg-gray-900 dark:bg-gray-100 scale-125"
-                    : "bg-gray-300 dark:bg-gray-700"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection />
 
       {/* 6 CTA */}
       <section
