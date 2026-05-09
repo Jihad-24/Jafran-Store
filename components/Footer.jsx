@@ -13,7 +13,7 @@ export default function Footer() {
   return (
     <footer className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
           {/* Brand */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-3 w-fit">
@@ -29,16 +29,16 @@ export default function Footer() {
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   Jafran Store
                 </h2>
+
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Premium gaming gear & digital marketplace
+                  Modern ecommerce store
                 </p>
               </div>
             </Link>
 
             <p className="mt-4 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
-              Jafran Store is your trusted destination for gaming products,
-              accessories, and digital essentials with a smooth shopping
-              experience and secure checkout.
+              Jafran Store offers a smooth and secure shopping experience with
+              carefully selected products, fast browsing, and reliable checkout.
             </p>
 
             {/* Socials */}
@@ -122,13 +122,13 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Support */}
+          {/* Support + Legal */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Support
             </h3>
 
-            <div className="flex flex-col gap-3 text-sm">
+            <div className="flex flex-col gap-3 text-sm mb-6">
               <Link
                 href="/cart"
                 className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
@@ -158,6 +158,35 @@ export default function Footer() {
               </Link>
             </div>
           </div>
+          <div className="">
+            {/* Legal Section (NEW) */}
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Legal
+            </h3>
+
+            <div className="flex flex-col gap-3 text-sm">
+              <Link
+                href="/terms"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Terms of Service
+              </Link>
+
+              <Link
+                href="/terms"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Privacy Policy
+              </Link>
+
+              <Link
+                href="/terms"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Refund Policy
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Bottom */}
@@ -167,7 +196,7 @@ export default function Footer() {
           </p>
 
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Built with ❤️ using Next.js & Tailwind CSS
+            Built with Next.js & Tailwind CSS
           </p>
         </div>
       </div>
