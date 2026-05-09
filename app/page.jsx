@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import HeroBanner from "../components/HeroBanner";
 import Image from "next/image";
 import TestimonialsSection from "../components/TestimonialsSection";
+import Cta from "../components/Cta";
 
 const StarIcon = ({ half = false, empty = false }) => (
   <span className="relative inline-block h-4 w-4 shrink-0">
@@ -271,38 +272,7 @@ export default function Home() {
       <TestimonialsSection />
 
       {/* 6 CTA */}
-      <section
-        className="relative w-full py-24 text-center text-white"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* dark overlay */}
-        <div className="absolute inset-0 bg-black/60" />
-
-        {/* content */}
-        <div className="relative container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-            Start managing your products today
-          </h2>
-
-          <p className="text-gray-200 mt-4 text-lg">
-            Join and organize everything in one place with a clean modern
-            dashboard
-          </p>
-
-          <Link
-            href={user ? "/items" : "/login"}
-            className="inline-block mt-8 px-10 py-4 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition shadow-lg"
-          >
-            Get Started
-          </Link>
-        </div>
-      </section>
-
+      <Cta />
       {/* 7 Footer */}
       <Footer />
     </>
