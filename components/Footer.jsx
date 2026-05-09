@@ -1,49 +1,176 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import {
+  FacebookLogo,
+  GithubLogo,
+  InstagramLogo,
+  LinkedinLogo,
+} from "@phosphor-icons/react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 dark:bg-black text-white py-10 border-t border-gray-800">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between gap-6">
-        <div>
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo.png"
-              alt="Jafran Store"
-              width={40}
-              height={40}
-              className="rounded-full object-cover"
-            />
+    <footer className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+          {/* Brand */}
+          <div className="md:col-span-2">
+            <Link href="/" className="flex items-center gap-3 w-fit">
+              <Image
+                src="/logo.png"
+                alt="Jafran Store"
+                width={45}
+                height={45}
+                className="rounded-full object-cover"
+              />
 
-            <span className="text-xl font-bold tracking-tight  text-gray-100">
-              Jafran Store
-            </span>
-          </Link>
-          <p className="text-gray-300 text-sm mt-2">
-            Simple product management platform
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Jafran Store
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Premium gaming gear & digital marketplace
+                </p>
+              </div>
+            </Link>
+
+            <p className="mt-4 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
+              Jafran Store is your trusted destination for gaming products,
+              accessories, and digital essentials with a smooth shopping
+              experience and secure checkout.
+            </p>
+
+            {/* Socials */}
+            <div className="flex items-center gap-4 mt-6">
+              <Link
+                href="#"
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-900 hover:scale-110 transition"
+              >
+                <FacebookLogo
+                  size={20}
+                  className="text-gray-700 dark:text-gray-300"
+                />
+              </Link>
+
+              <Link
+                href="#"
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-900 hover:scale-110 transition"
+              >
+                <InstagramLogo
+                  size={20}
+                  className="text-gray-700 dark:text-gray-300"
+                />
+              </Link>
+
+              <Link
+                href="#"
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-900 hover:scale-110 transition"
+              >
+                <GithubLogo
+                  size={20}
+                  className="text-gray-700 dark:text-gray-300"
+                />
+              </Link>
+
+              <Link
+                href="#"
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-900 hover:scale-110 transition"
+              >
+                <LinkedinLogo
+                  size={20}
+                  className="text-gray-700 dark:text-gray-300"
+                />
+              </Link>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Quick Links
+            </h3>
+
+            <div className="flex flex-col gap-3 text-sm">
+              <Link
+                href="/"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Home
+              </Link>
+
+              <Link
+                href="/items"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Shop
+              </Link>
+
+              <Link
+                href="/about"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                About
+              </Link>
+
+              <Link
+                href="/contact"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Support
+            </h3>
+
+            <div className="flex flex-col gap-3 text-sm">
+              <Link
+                href="/cart"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Cart
+              </Link>
+
+              <Link
+                href="/dashboard"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Dashboard
+              </Link>
+
+              <Link
+                href="/login"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Login
+              </Link>
+
+              <Link
+                href="/register"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
+              >
+                Register
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            © 2026 Jafran Store. All rights reserved.
+          </p>
+
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Built with ❤️ using Next.js & Tailwind CSS
           </p>
         </div>
-
-        <div className="flex gap-6 text-sm text-gray-200">
-          <Link href="/" className="hover:text-white transition">
-            Home
-          </Link>
-          <Link href="/items" className="hover:text-white transition">
-            Items
-          </Link>
-          <Link href="/about" className="hover:text-white transition">
-            About
-          </Link>
-          <Link href="/contact" className="hover:text-white transition">
-            Contact
-          </Link>
-        </div>
       </div>
-
-      <p className="text-center text-gray-500 text-xs mt-8">
-        © 2026 Odyssey. All rights reserved.
-      </p>
     </footer>
   );
 }
