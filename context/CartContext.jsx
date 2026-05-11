@@ -55,22 +55,84 @@ export function CartProvider({ children }) {
   }, [user?.email, cartVersion]);
 
   // ---------------- ADD TO CART ----------------
-  const addToCart = async (product, qty = 1, selectedSize, selectedColor) => {
+  // const addToCart = async (product, qty = 1, selectedSize, selectedColor) => {
+  //   const newItem = {
+  //     productId: product._id,
+  //     title: product.title,
+  //     price: product.price,
+  //     image: product.image,
+  //     category: product.category,
+  //     image: product.images?.[0] || product.image, // 👈 FIX HERE
+  //     qty,
+  //     selectedSize,
+  //     selectedColor,
+  //   };
+
+  //   if (!user?.email) {
+  //     const cart = getGuestCart();
+  //     const existing = cart.find((i) => i.productId === newItem.productId);
+
+  //     let updated;
+
+  //     if (existing) {
+  //       updated = cart.map((i) =>
+  //         i.productId === newItem.productId ? { ...i, qty: i.qty + qty } : i,
+  //       );
+  //       toast.success("Updated quantity in cart");
+  //     } else {
+  //       updated = [...cart, newItem];
+  //       toast.success("Added to cart");
+  //     }
+
+  //     setItems(updated);
+  //     setGuestCart(updated);
+  //     return;
+  //   }
+
+  //   try {
+  //     await axios.post("https://jafran-store-server.vercel.app/cart", {
+  //       ...newItem,
+  //       userEmail: user.email,
+  //     });
+
+  //     const res = await axios.get(
+  //       `https://jafran-store-server.vercel.app/cart?email=${user.email}`,
+  //     );
+
+  //     setItems(res.data);
+  //     toast.success("Added to cart");
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Failed to add to cart");
+  //   }
+  // };
+  const addToCart = async (
+    product,
+    qty = 1,
+    selectedSizes = [],
+    selectedColors = [],
+  ) => {
     const newItem = {
       productId: product._id,
       title: product.title,
       price: product.price,
-      image: product.image,
+      image: product.images?.[0] || product.image,
       category: product.category,
-      image: product.images?.[0] || product.image, // 👈 FIX HERE
       qty,
-      selectedSize,
-      selectedColor,
+      selectedSizes,
+      selectedColors,
     };
 
+    // guest cart
     if (!user?.email) {
       const cart = getGuestCart();
-      const existing = cart.find((i) => i.productId === newItem.productId);
+
+      const existing = cart.find(
+        (i) =>
+          i.productId === newItem.productId &&
+          JSON.stringify(i.selectedSizes) === JSON.stringify(selectedSizes) &&
+          JSON.stringify(i.selectedColors) === JSON.stringify(selectedColors),
+      );
 
       let updated;
 
@@ -78,7 +140,7 @@ export function CartProvider({ children }) {
         updated = cart.map((i) =>
           i.productId === newItem.productId ? { ...i, qty: i.qty + qty } : i,
         );
-        toast.success("Updated quantity in cart");
+        toast.success("Updated cart item");
       } else {
         updated = [...cart, newItem];
         toast.success("Added to cart");

@@ -8,11 +8,23 @@ import toast from "react-hot-toast";
 export default function AddToCartSection({ item }) {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
 
   const { addToCart } = useCart();
 
+  const toggleSize = (size) => {
+    setSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
+    );
+  };
+
+  const toggleColor = (color) => {
+    setSelectedColors((prev) =>
+      prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color],
+    );
+  };
+console.log(selectedSizes, selectedColors);
   const updateQty = (val) => {
     if (val < 1) return;
     setQty(val);
@@ -27,13 +39,13 @@ export default function AddToCartSection({ item }) {
 
   const handleAdd = () => {
     // Require size if sizes exist
-    if (item?.sizes?.length && !selectedSize) {
+    if (item?.sizes?.length && selectedSizes.length === 0) {
       toast.error("Please select a size");
       return;
     }
 
     // Require color if colors exist
-    if (item?.colors?.length && !selectedColor) {
+    if (item?.colors?.length && selectedColors.length === 0) {
       toast.error("Please select a color");
       return;
     }
@@ -43,8 +55,8 @@ export default function AddToCartSection({ item }) {
         ...item,
       },
       qty,
-      selectedSize,
-      selectedColor,
+      selectedSizes,
+      selectedColors,
     );
 
     setAdded(true);
@@ -66,9 +78,9 @@ export default function AddToCartSection({ item }) {
               {sizes?.map((size) => (
                 <button
                   key={size}
-                  onClick={() => setSelectedSize(size)}
+                  onClick={() => toggleSize(size)}
                   className={`min-w-[48px] px-4 py-2 cursor-pointer rounded-xl border text-sm font-medium transition ${
-                    selectedSize === size
+                    selectedSizes.includes(size)
                       ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white"
                       : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
                   }`}
@@ -90,9 +102,9 @@ export default function AddToCartSection({ item }) {
               {colors.map((color) => (
                 <button
                   key={color}
-                  onClick={() => setSelectedColor(color)}
+                  onClick={() => toggleColor(color)}
                   className={`px-4 py-2 rounded-xl cursor-pointer border text-sm font-medium transition ${
-                    selectedColor === color
+                    selectedColors.includes(color)
                       ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white"
                       : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
                   }`}

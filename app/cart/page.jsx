@@ -142,19 +142,27 @@ export default function CartPage() {
                             +
                           </button>
                         </div>
-                        <div className="">
-                          {(item.selectedSize || item.selectedColor) && (
-                            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex gap-2 flex-wrap">
-                              {item.selectedSize && (
-                                <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">
-                                  Size: {item.selectedSize}
-                                </span>
+                        <div>
+                          {(item.selectedSizes?.length > 0 ||
+                            item.selectedColors?.length > 0) && (
+                            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex">
+                              {/* Sizes */}
+                              {item.selectedSizes?.length > 0 && (
+                                <div className="flex gap-1 flex-wrap">
+                                  <span className="font-medium">Sizes:</span>
+                                  <span>{item.selectedSizes.join(", ")}</span>
+                                </div>
                               )}
-
-                              {item.selectedColor && (
-                                <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">
-                                  Color: {item.selectedColor}
-                                </span>
+                              {item.selectedSizes?.length > 0 &&
+                                item.selectedColors?.length > 0 && (
+                                  <span className="px-3"> • </span>
+                                )}
+                              {/* Colors */}
+                              {item.selectedColors?.length > 0 && (
+                                <div className="flex gap-1 flex-wrap">
+                                  <span className="font-medium">Colors:</span>
+                                  <span>{item.selectedColors.join(", ")}</span>
+                                </div>
                               )}
                             </div>
                           )}

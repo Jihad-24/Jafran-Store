@@ -100,7 +100,7 @@ export default function Navbar() {
 
           <button
             onClick={toggleTheme}
-            className={`relative inline-flex h-7 w-14 items-center rounded-full border transition ${
+            className={`relative inline-flex cursor-pointer h-7 w-14 items-center rounded-full border transition ${
               isDark
                 ? "bg-indigo-500 border-indigo-400"
                 : "bg-gray-200 border-gray-300"

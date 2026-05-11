@@ -53,8 +53,8 @@ export default function CheckoutPage() {
         title: i.title,
         qty: i.qty,
         price: i.price,
-        selectedSize: i.selectedSize || null,
-        selectedColor: i.selectedColor || null,
+        selectedSizes: i.selectedSizes || null,
+        selectedColors: i.selectedColors || null,
         image: i.image || null,
       })),
     };
@@ -305,12 +305,21 @@ export default function CheckoutPage() {
                           <span className="text-gray-400"> ×{item.qty}</span>
                         </p>
 
-                        {(item?.selectedSize || item?.selectedColor) && (
+                        {(item?.selectedSizes?.length > 0 ||
+                          item?.selectedColors?.length > 0) && (
                           <p className="text-xs text-gray-400 mt-0.5">
-                            {item.selectedSize && `Size: ${item.selectedSize}`}
-                            {item.selectedSize && item.selectedColor && " • "}
-                            {item.selectedColor &&
-                              `Color: ${item.selectedColor}`}
+                            {item.selectedSizes?.length > 0 && (
+                              <>Size: {item.selectedSizes.join(", ")}</>
+                            )}
+
+                            {item.selectedSizes?.length > 0 &&
+                              item.selectedColors?.length > 0 && (
+                                <span className="px-1"> • </span>
+                              )}
+
+                            {item.selectedColors?.length > 0 && (
+                              <>Color: {item.selectedColors.join(", ")}</>
+                            )}
                           </p>
                         )}
                       </div>
