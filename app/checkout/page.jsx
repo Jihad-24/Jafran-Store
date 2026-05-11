@@ -14,8 +14,8 @@ export default function CheckoutPage() {
   const { items, hydrated, cartTotal, clearCart } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const { user } = useAuth();
-
-  const delivery = 0;
+  const [delivery, setDelivery] = useState(70); // default inside Dhaka
+  // const delivery = 0;
   const total = cartTotal + delivery;
 
   useEffect(() => {
@@ -206,6 +206,36 @@ export default function CheckoutPage() {
 
               <section className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
                 <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+                  Delivery area
+                </h2>
+
+                <div className="space-y-3">
+                  {[
+                    { value: 70, label: "Inside Dhaka (৳70)" },
+                    { value: 120, label: "Outside Dhaka (৳120)" },
+                  ].map((opt) => (
+                    <label
+                      key={opt.value}
+                      className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer"
+                    >
+                      <input
+                        type="radio"
+                        name="delivery"
+                        value={opt.value}
+                        checked={delivery === opt.value}
+                        onChange={() => setDelivery(opt.value)}
+                        className="accent-gray-900 dark:accent-white"
+                      />
+                      <span className="text-sm text-gray-800 dark:text-gray-200">
+                        {opt.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              <section className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+                <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
                   Payment
                 </h2>
                 <div className="space-y-3">
@@ -299,7 +329,9 @@ export default function CheckoutPage() {
                   <div className="flex justify-between">
                     <span>Delivery</span>
                     <span className="text-green-600 dark:text-green-400 font-medium">
-                      Free
+                      {delivery === 0
+                        ? "Free"
+                        : `৳${delivery.toLocaleString()}`}
                     </span>
                   </div>
                 </dl>
