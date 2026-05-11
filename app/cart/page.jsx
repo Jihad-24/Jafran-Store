@@ -44,7 +44,7 @@ export default function CartPage() {
   const { items, updateQty, removeItem, clearCart, cartTotal } = useCart();
 
   // const delivery = 0;
-  const [delivery, setDelivery] = useState(70);
+  const { delivery, setDelivery } = useCart();
   const total = cartTotal + delivery;
 
   // console.log(items);

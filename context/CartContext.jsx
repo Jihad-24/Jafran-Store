@@ -25,6 +25,7 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [hydrated, setHydrated] = useState(false);
   const [cartVersion, setCartVersion] = useState(0);
+  const [delivery, setDelivery] = useState(70);
 
   // ---------------- LOAD CART ----------------
   useEffect(() => {
@@ -194,6 +195,8 @@ export function CartProvider({ children }) {
         cartCount,
         cartTotal,
         refreshCart,
+        delivery,
+        setDelivery,
       }}
     >
       {children}

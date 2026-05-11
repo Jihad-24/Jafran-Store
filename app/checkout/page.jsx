@@ -11,10 +11,10 @@ import axios from "axios";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, hydrated, cartTotal, clearCart } = useCart();
+  const { items, hydrated, cartTotal, clearCart, delivery } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const { user } = useAuth();
-  const [delivery, setDelivery] = useState(70); // default inside Dhaka
+  // const [delivery, setDelivery] = useState(70); // default inside Dhaka
   // const delivery = 0;
   const total = cartTotal + delivery;
 
