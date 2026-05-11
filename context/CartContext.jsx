@@ -54,14 +54,17 @@ export function CartProvider({ children }) {
   }, [user?.email, cartVersion]);
 
   // ---------------- ADD TO CART ----------------
-  const addToCart = async (product, qty = 1) => {
+  const addToCart = async (product, qty = 1, selectedSize, selectedColor) => {
     const newItem = {
       productId: product._id,
       title: product.title,
       price: product.price,
       image: product.image,
       category: product.category,
+      image: product.images?.[0] || product.image, // 👈 FIX HERE
       qty,
+      selectedSize,
+      selectedColor,
     };
 
     if (!user?.email) {

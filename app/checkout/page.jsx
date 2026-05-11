@@ -53,6 +53,9 @@ export default function CheckoutPage() {
         title: i.title,
         qty: i.qty,
         price: i.price,
+        selectedSize: i.selectedSize || null,
+        selectedColor: i.selectedColor || null,
+        image: i.image || null,
       })),
     };
 
@@ -90,6 +93,7 @@ export default function CheckoutPage() {
     );
   }
 
+  // console.log("cart", items);
   return (
     <div>
       <Navbar />
@@ -254,12 +258,32 @@ export default function CheckoutPage() {
                   {items.map((item) => (
                     <li
                       key={item._id}
-                      className="flex justify-between gap-2 text-gray-600 dark:text-gray-400"
+                      className="flex justify-between items-center gap-2 text-gray-600 dark:text-gray-400"
                     >
-                      <span className="truncate">
-                        {item.title}{" "}
-                        <span className="text-gray-400">×{item.qty}</span>
-                      </span>
+                      <Link href={`/items/${item._id}`} className="shrink-0">
+                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                          />
+                        </div>
+                      </Link>
+                      <div className="truncate">
+                        <p>
+                          {item.title}
+                          <span className="text-gray-400"> ×{item.qty}</span>
+                        </p>
+
+                        {(item?.selectedSize || item?.selectedColor) && (
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            {item.selectedSize && `Size: ${item.selectedSize}`}
+                            {item.selectedSize && item.selectedColor && " • "}
+                            {item.selectedColor &&
+                              `Color: ${item.selectedColor}`}
+                          </p>
+                        )}
+                      </div>
                       <span className="shrink-0 font-medium text-gray-800 dark:text-gray-200">
                         ৳{(item.price * item.qty).toLocaleString()}
                       </span>

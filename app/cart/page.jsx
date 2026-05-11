@@ -9,11 +9,23 @@ function EmptyCart() {
   return (
     <div className="flex flex-col items-center justify-center py-32 text-center">
       <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-5">
-        <svg className="w-9 h-9 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+        <svg
+          className="w-9 h-9 text-gray-400 dark:text-gray-500"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+          />
         </svg>
       </div>
-      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Your cart is empty</h2>
+      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+        Your cart is empty
+      </h2>
       <p className="text-sm text-gray-400 dark:text-gray-500 mt-2 mb-6">
         Looks like you haven&apos;t added anything yet.
       </p>
@@ -33,6 +45,8 @@ export default function CartPage() {
   const delivery = 0;
   const total = cartTotal + delivery;
 
+  // console.log(items);
+
   return (
     <div>
       <Navbar />
@@ -41,9 +55,16 @@ export default function CartPage() {
         {/* Breadcrumb */}
         <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-            <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Home</Link>
+            <Link
+              href="/"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition"
+            >
+              Home
+            </Link>
             <span>/</span>
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Cart</span>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">
+              Cart
+            </span>
           </div>
         </div>
 
@@ -91,7 +112,9 @@ export default function CartPage() {
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{item.category}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">
+                        {item.category}
+                      </p>
                       <Link href={`/items/${item._id}`}>
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline">
                           {item.title}
@@ -103,7 +126,7 @@ export default function CartPage() {
                         <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                           <button
                             onClick={() => updateQty(item._id, item.qty - 1)}
-                            className="px-3 py-1.5 text-base bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                            className="px-3 py-1.5 text-base cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
                           >
                             −
                           </button>
@@ -112,10 +135,27 @@ export default function CartPage() {
                           </span>
                           <button
                             onClick={() => updateQty(item._id, item.qty + 1)}
-                            className="px-3 py-1.5 text-base bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                            className="px-3 py-1.5 text-base cursor-pointer bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
                           >
                             +
                           </button>
+                        </div>
+                        <div className="">
+                          {(item.selectedSize || item.selectedColor) && (
+                            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex gap-2 flex-wrap">
+                              {item.selectedSize && (
+                                <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">
+                                  Size: {item.selectedSize}
+                                </span>
+                              )}
+
+                              {item.selectedColor && (
+                                <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">
+                                  Color: {item.selectedColor}
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
 
                         {/* Price */}
@@ -131,8 +171,18 @@ export default function CartPage() {
                       className="shrink-0 text-gray-300 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 transition mt-0.5"
                       title="Remove"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -155,7 +205,10 @@ export default function CartPage() {
 
                   <dl className="space-y-3 text-sm">
                     {items.map((item) => (
-                      <div key={item._id} className="flex justify-between text-gray-500 dark:text-gray-400">
+                      <div
+                        key={item._id}
+                        className="flex justify-between text-gray-500 dark:text-gray-400"
+                      >
                         <span className="truncate max-w-[160px]">
                           {item.title} × {item.qty}
                         </span>
@@ -175,7 +228,9 @@ export default function CartPage() {
                     </div>
                     <div className="flex justify-between text-gray-500 dark:text-gray-400">
                       <span>Delivery</span>
-                      <span className="text-green-600 dark:text-green-400 font-medium">Free</span>
+                      <span className="text-green-600 dark:text-green-400 font-medium">
+                        Free
+                      </span>
                     </div>
                   </dl>
 
@@ -194,8 +249,18 @@ export default function CartPage() {
                   </Link>
 
                   <p className="mt-3 text-center text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-1.5">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                      />
                     </svg>
                     Secure checkout
                   </p>
