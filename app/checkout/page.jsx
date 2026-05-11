@@ -291,7 +291,7 @@ export default function CheckoutPage() {
                       className="flex justify-between items-center gap-2 text-gray-600 dark:text-gray-400"
                     >
                       <Link href={`/items/${item._id}`} className="shrink-0">
-                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+                        <div className="w-18 h-18 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
                           <img
                             src={item.image}
                             alt={item.title}
