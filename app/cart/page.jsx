@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
+import { useState } from "react";
 
 function EmptyCart() {
   return (
@@ -42,7 +43,8 @@ function EmptyCart() {
 export default function CartPage() {
   const { items, updateQty, removeItem, clearCart, cartTotal } = useCart();
 
-  const delivery = 0;
+  // const delivery = 0;
+  const [delivery, setDelivery] = useState(70);
   const total = cartTotal + delivery;
 
   // console.log(items);
@@ -202,13 +204,50 @@ export default function CartPage() {
                   <h2 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-5">
                     Order Summary
                   </h2>
+                  <section className="my-4 space-y-3">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                      Delivery Area
+                    </h3>
 
+                    <div className="space-y-2">
+                      {[
+                        { value: 70, label: "Inside Dhaka (৳70)" },
+                        { value: 120, label: "Outside Dhaka (৳120)" },
+                      ].map((opt) => (
+                        <label
+                          key={opt.value}
+                          className="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer"
+                        >
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
+                            {opt.label}
+                          </span>
+
+                          <input
+                            type="radio"
+                            name="delivery"
+                            checked={delivery === opt.value}
+                            onChange={() => setDelivery(opt.value)}
+                            className="accent-gray-900 dark:accent-white"
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </section>
                   <dl className="space-y-3 text-sm">
                     {items.map((item) => (
                       <div
                         key={item._id}
-                        className="flex justify-between text-gray-500 dark:text-gray-400"
+                        className="flex justify-between items-center text-gray-500 dark:text-gray-400"
                       >
+                        <Link href={`/items/${item._id}`} className="shrink-0">
+                          <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+                            <img
+                              src={item.image}
+                              alt={item.title}
+                              className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                            />
+                          </div>
+                        </Link>
                         <span className="truncate max-w-[160px]">
                           {item.title} × {item.qty}
                         </span>
@@ -228,8 +267,8 @@ export default function CartPage() {
                     </div>
                     <div className="flex justify-between text-gray-500 dark:text-gray-400">
                       <span>Delivery</span>
-                      <span className="text-green-600 dark:text-green-400 font-medium">
-                        Free
+                      <span className="font-medium text-gray-700 dark:text-gray-300">
+                        ৳{delivery}
                       </span>
                     </div>
                   </dl>
