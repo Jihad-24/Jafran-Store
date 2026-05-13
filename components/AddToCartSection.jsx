@@ -24,7 +24,7 @@ export default function AddToCartSection({ item }) {
       prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color],
     );
   };
-console.log(selectedSizes, selectedColors);
+  // console.log(selectedSizes, selectedColors);
   const updateQty = (val) => {
     if (val < 1) return;
     setQty(val);
