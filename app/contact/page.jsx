@@ -25,7 +25,6 @@ export default function Contact() {
 
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4 py-20">
         <div className="max-w-5xl w-full grid md:grid-cols-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl overflow-hidden shadow-lg">
-
           {/* Left info panel */}
           <div className="bg-gray-900 dark:bg-gray-950 p-10 flex flex-col justify-center">
             <h1 className="text-4xl font-bold text-white">Contact Us</h1>
@@ -92,7 +91,6 @@ export default function Contact() {
               </button>
             </form>
           </div>
-
         </div>
       </div>
 
