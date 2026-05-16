@@ -222,7 +222,7 @@ export default async function Details({ params }) {
                   >
                     <div className="overflow-hidden aspect-square bg-gray-100 dark:bg-gray-800">
                       <img
-                        src={rel.image}
+                        src={rel.images?.[0]}
                         alt={rel.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                       />
