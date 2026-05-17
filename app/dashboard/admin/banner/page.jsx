@@ -11,7 +11,7 @@ export default function AdminBannerPage() {
   const [form, setForm] = useState({
     title: "",
     subtitle: "",
-    link: "",
+    link: "/items",
     active: true,
   });
 
@@ -126,7 +126,7 @@ export default function AdminBannerPage() {
             name="link"
             value={form.link}
             onChange={handleChange}
-            placeholder="/products"
+            placeholder="/items"
             className="w-full mt-1 p-3 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
           />
         </div>

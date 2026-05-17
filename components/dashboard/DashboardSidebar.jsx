@@ -18,8 +18,9 @@ const adminNav = [
   { href: "/dashboard/admin/users", label: "Manage Users", icon: "▣" },
   { href: "/dashboard/admin/orders", label: "Manage Orders", icon: "▤" },
   { href: "/dashboard/admin/items", label: "Manage Items", icon: "▤" },
+  { href: "/dashboard/admin/banners", label: "Manage Banners", icon: "▤" },
   { href: "/dashboard/admin/add", label: "Add Item", icon: "✚" },
-  { href: "/dashboard/admin/banner", label: "Manage Banner", icon: "✚" },
+  { href: "/dashboard/admin/banner", label: "Add Banner", icon: "✚" },
   { href: "/dashboard/admin/reports", label: "Reports", icon: "▥" },
   { href: "/dashboard/admin/categories", label: "Categories", icon: "▦" },
   { href: "/dashboard/settings", label: "Settings", icon: "◎" },
@@ -77,7 +78,7 @@ export default function DashboardSidebar() {
             onClick={closeMobile}
             className="text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100"
           >
-            Odyssey
+            Jafran Store
           </Link>
 
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
