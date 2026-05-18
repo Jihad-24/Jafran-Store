@@ -30,20 +30,20 @@ function EmptyCart() {
       <p className="text-sm text-gray-400 dark:text-gray-500 mt-2 mb-6">
         Looks like you haven&apos;t added anything yet.
       </p>
-     <div className="flex gap-4">
-       <Link
-        href="/items"
-        className="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-sm font-semibold hover:bg-gray-700 dark:hover:bg-gray-200 transition"
-      >
-        Browse Products
-      </Link>
-       <Link
-        href="/dashboard/my-items"
-        className="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-sm font-semibold hover:bg-gray-700 dark:hover:bg-gray-200 transition"
-      >
-        See Orders
-      </Link>
-     </div>
+      <div className="flex gap-4">
+        <Link
+          href="/items"
+          className="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-sm font-semibold hover:bg-gray-700 dark:hover:bg-gray-200 transition"
+        >
+          Browse Products
+        </Link>
+        <Link
+          href="/dashboard/my-items"
+          className="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-sm font-semibold hover:bg-gray-700 dark:hover:bg-gray-200 transition"
+        >
+          See Orders
+        </Link>
+      </div>
     </div>
   );
 }
