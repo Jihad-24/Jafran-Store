@@ -13,7 +13,8 @@ export default function DashboardProfilePage() {
           Profile
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Account summary from your session. Full profile page includes more mock fields.
+          Account summary from your session. Full profile page includes more
+          mock fields.
         </p>
       </div>
 
@@ -26,7 +27,9 @@ export default function DashboardProfilePage() {
             <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">
               {user?.email ?? "Signed in user"}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Firebase auth</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Firebase auth
+            </p>
           </div>
         </div>
         <Link
