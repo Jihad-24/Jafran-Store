@@ -30,7 +30,10 @@ export default function OverviewCharts({ barData, lineData, pieData, isDark }) {
         </h3>
         <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <BarChart
+              data={barData}
+              margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke={grid} />
               <XAxis dataKey="name" tick={{ fill: tick, fontSize: 12 }} />
               <YAxis tick={{ fill: tick, fontSize: 12 }} />
@@ -43,8 +46,18 @@ export default function OverviewCharts({ barData, lineData, pieData, isDark }) {
                 labelStyle={{ color: tick }}
               />
               <Legend />
-              <Bar dataKey="sales" name="Sales ($)" fill="#6366f1" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="listings" name="Listings" fill="#10b981" radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey="sales"
+                name="Sales ($)"
+                fill="#6366f1"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="listings"
+                name="Listings"
+                fill="#10b981"
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -56,7 +69,10 @@ export default function OverviewCharts({ barData, lineData, pieData, isDark }) {
         </h3>
         <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={lineData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <LineChart
+              data={lineData}
+              margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke={grid} />
               <XAxis dataKey="month" tick={{ fill: tick, fontSize: 12 }} />
               <YAxis tick={{ fill: tick, fontSize: 12 }} />
@@ -68,8 +84,22 @@ export default function OverviewCharts({ barData, lineData, pieData, isDark }) {
                 }}
               />
               <Legend />
-              <Line type="monotone" dataKey="users" name="Users" stroke="#6366f1" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="revenue" name="Revenue" stroke="#10b981" strokeWidth={2} dot={false} />
+              <Line
+                type="monotone"
+                dataKey="users"
+                name="Users"
+                stroke="#6366f1"
+                strokeWidth={2}
+                dot={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="revenue"
+                name="Revenue"
+                stroke="#10b981"
+                strokeWidth={2}
+                dot={false}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
