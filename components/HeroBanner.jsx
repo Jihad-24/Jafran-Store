@@ -13,6 +13,7 @@ import "swiper/css/pagination";
 
 export default function HeroBanner() {
   const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -23,11 +24,34 @@ export default function HeroBanner() {
         setBanners(res.data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchBanners();
   }, []);
+
+  // Skeleton Loading
+  if (loading) {
+    return (
+      <section className="relative">
+        <div className="h-[80vh] bg-gray-200 animate-pulse relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/20"></div>
+
+          <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center text-center">
+            <div className="h-12 w-3/4 md:w-1/2 bg-gray-300 rounded mb-6"></div>
+
+            <div className="h-5 w-2/3 md:w-1/3 bg-gray-300 rounded mb-3"></div>
+
+            <div className="h-5 w-1/2 md:w-1/4 bg-gray-300 rounded"></div>
+
+            <div className="mt-8 h-12 w-40 bg-gray-300 rounded-full"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (!banners.length) return null;
 
