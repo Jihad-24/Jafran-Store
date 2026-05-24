@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import HeroBanner from "../components/HeroBanner";
+import FeaturedItems from "../components/FeaturedItems";
 import Image from "next/image";
 import TestimonialsSection from "../components/TestimonialsSection";
 import Cta from "../components/Cta";
@@ -143,7 +144,7 @@ export default function Home() {
       </section>
 
       {/* 3 Featured Items */}
-      <section className="container mx-auto px-4 py-16">
+      {/* <section className="container mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
           Featured Items
         </h2>
@@ -226,7 +227,8 @@ export default function Home() {
             </div>
           )}
         </div>
-      </section>
+      </section> */}
+      <FeaturedItems />
 
       {/* 4 Categories */}
       <section className="bg-white dark:bg-gray-950 py-20">
