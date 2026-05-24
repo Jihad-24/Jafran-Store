@@ -7,7 +7,7 @@ export default function ProductImageGallery({ images = [], alt = "" }) {
 
   const next = useCallback(
     () => setActive((prev) => (prev + 1) % images.length),
-    [images.length]
+    [images.length],
   );
 
   useEffect(() => {
@@ -30,7 +30,11 @@ export default function ProductImageGallery({ images = [], alt = "" }) {
                 : "border-gray-200 dark:border-gray-700 opacity-60 hover:opacity-100"
             }`}
           >
-            <img src={src} alt={`${alt} ${i + 1}`} className="w-full h-full object-cover" />
+            <img
+              src={src}
+              alt={`${alt} ${i + 1}`}
+              className="w-full h-full object-cover"
+            />
           </button>
         ))}
       </div>
