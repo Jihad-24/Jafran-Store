@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 
 const StarIcon = ({ half = false, empty = false }) => (
@@ -92,8 +91,6 @@ function CardSkeleton() {
 }
 
 export default function Home() {
-  const { user, logout } = useAuth();
-
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -113,23 +110,21 @@ export default function Home() {
   return (
     <>
       <section className="container mx-auto px-4 py-16">
-       <div className="flex items-center justify-between">
-         <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Featured Items
-        </h2>
-            <Link
-              href="/items"
-              className="text-sm font-medium hover:underline text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-            >
-              View all
-            </Link>
-          </div>
+        <div className="flex items-center justify-between">
+          <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Featured Items
+          </h2>
+          <Link
+            href="/items"
+            className="text-sm font-medium hover:underline text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
+            View all
+          </Link>
+        </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           {loading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <CardSkeleton key={i} />
-              ))
+            ? Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)
             : items.length > 0 &&
               items.slice(0, 6).map((item) => (
                 <Link
@@ -181,12 +176,11 @@ export default function Home() {
                         ৳{item.price}
                       </span>
 
-                      {item.oldPrice != null &&
-                        item.oldPrice > item.price && (
-                          <span className="text-sm text-gray-400 line-through dark:text-gray-500">
-                            ৳{item.oldPrice}
-                          </span>
-                        )}
+                      {item.oldPrice != null && item.oldPrice > item.price && (
+                        <span className="text-sm text-gray-400 line-through dark:text-gray-500">
+                          ৳{item.oldPrice}
+                        </span>
+                      )}
                     </div>
 
                     <p className="mt-auto flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
@@ -204,7 +198,6 @@ export default function Home() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-
                       Free delivery available
                     </p>
 
