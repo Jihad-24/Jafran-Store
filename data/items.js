@@ -77,4 +77,17 @@ export const itemsData = [
       "Noise-cancelling headphones delivering immersive sound quality and all-day comfort.",
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
   },
+  {
+    title: "Headphones",
+    category: "Electronics",
+    price: 300,
+    oldPrice: 400,
+    discount: 25,
+    rating: 4.8,
+    ratingCount: 150,
+    delivery: "Free Delivery",
+    description:
+      "Noise-cancelling headphones delivering immersive sound quality and all-day comfort.",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+  },
 ];
