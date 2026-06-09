@@ -52,6 +52,19 @@ export const itemsData = [
     image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
   },
   {
+    title: "Backpack",
+    category: "Accessories",
+    price: 60,
+    oldPrice: 80,
+    discount: 20,
+    rating: 4.3,
+    ratingCount: 64,
+    delivery: "Free Delivery",
+    description:
+      "Durable travel backpack with multiple compartments, perfect for daily use and trips.",
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
+  },
+  {
     title: "Watch",
     category: "Accessories",
     price: 200,
