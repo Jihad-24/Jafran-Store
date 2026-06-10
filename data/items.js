@@ -13,6 +13,19 @@ export const itemsData = [
     image: "https://images.unsplash.com/photo-1603898037225-1f3a0f1b0a1b",
   },
   {
+    title: "iPhone 13",
+    category: "Electronics",
+    price: 999,
+    oldPrice: 1199,
+    discount: 20,
+    rating: 4.5,
+    ratingCount: 120,
+    delivery: "Free Delivery",
+    description:
+      "A premium smartphone with a powerful A15 chip and stunning display for everyday use.",
+    image: "https://images.unsplash.com/photo-1603898037225-1f3a0f1b0a1b",
+  },
+  {
     title: "Running Shoes",
     category: "Fashion",
     price: 120,
