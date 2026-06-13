@@ -39,6 +39,19 @@ export const itemsData = [
     image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5",
   },
   {
+    title: "Running Shoes",
+    category: "Fashion",
+    price: 120,
+    oldPrice: 160,
+    discount: 25,
+    rating: 4.2,
+    ratingCount: 85,
+    delivery: "Free Delivery",
+    description:
+      "Lightweight and comfortable running shoes designed for daily workouts and long-distance runs.",
+    image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5",
+  },
+  {
     title: "Laptop",
     category: "Electronics",
     price: 1500,
