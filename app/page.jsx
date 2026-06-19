@@ -11,6 +11,7 @@ import Categories from "../components/Categories";
 export default function Home() {
   return (
     <>
+      {/* Navbar */}
       <Navbar />
 
       {/* 1 Hero */}
@@ -25,11 +26,13 @@ export default function Home() {
       {/* 4 Categories */}
 
       <Categories />
+
       {/* 5 Testimonials */}
       <TestimonialsSection />
 
       {/* 6 CTA */}
       <Cta />
+
       {/* 7 Footer */}
       <Footer />
     </>
