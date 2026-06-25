@@ -104,6 +104,19 @@ export const itemsData = [
     image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
   },
   {
+    title: "Royelty-Free Music",
+    category: "Accessories",
+    price: 200,
+    oldPrice: 250,
+    discount: 20,
+    rating: 4.6,
+    ratingCount: 98,
+    delivery: "Free Delivery",
+    description:
+      "Elegant and modern wristwatch with a sleek design, suitable for both casual and formal wear.",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+  },
+  {
     title: "Watch",
     category: "Accessories",
     price: 200,
