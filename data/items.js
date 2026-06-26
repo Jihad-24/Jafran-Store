@@ -168,4 +168,18 @@ export const itemsData = [
       "Noise-cancelling headphones delivering immersive sound quality and all-day comfort.",
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
   },
+  {
+    title: "Bluetooth Speaker",
+    category: "Electronics",
+    price: 300,
+    oldPrice: 400,
+    discount: 25,
+    rating: 4.8,
+    ratingCount: 150,
+    delivery: "Free Delivery",
+    description:
+      "Compact and powerful Bluetooth speaker for crystal-clear sound and seamless connectivity.",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+  },
+  
 ];
