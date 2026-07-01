@@ -37,11 +37,11 @@ export default function Contact() {
             <div className="mt-8 space-y-4 text-sm text-gray-300">
               <div className="flex items-center gap-3">
                 <span className="w-2 h-2 bg-green-400 rounded-full shrink-0" />
-                support@yourapp.com
+                supportjafranfashion@gmail.com
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-2 h-2 bg-blue-400 rounded-full shrink-0" />
-                +880 1234-567890
+                +880 1645202421
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-2 h-2 bg-pink-400 rounded-full shrink-0" />
